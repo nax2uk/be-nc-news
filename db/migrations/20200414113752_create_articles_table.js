@@ -1,7 +1,7 @@
 exports.up = function (knex) {
   console.log("adding articles table ...");
   return knex.schema.createTable("articles", (tblArticles) => {
-    tblArticles.increments("article_id").primary();
+    tblArticles.increments("article_id");
     tblArticles.text("title").nullable();
     tblArticles.text("body").nullable();
     tblArticles.integer("votes").defaultTo(0);

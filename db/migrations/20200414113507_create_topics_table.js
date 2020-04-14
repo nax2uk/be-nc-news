@@ -1,7 +1,7 @@
 exports.up = function (knex) {
   console.log("creating topics table ...");
   return knex.schema.createTable("topics", (tblTopics) => {
-    tblTopics.string("slug").primary().unique(); // unique?
+    tblTopics.string("slug").primary(); // unique?
     tblTopics.text("description").nullable();
   });
 };
