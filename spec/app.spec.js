@@ -2,6 +2,9 @@ process.env.NODE_ENV = "test";
 const { expect } = require("chai");
 const request = require("supertest");
 const app = require("../app");
+const connection = require("../db/connection");
+
+after(() => connection.destroy());
 
 describe("#app", () => {
   describe("#/api", () => {
@@ -29,10 +32,10 @@ describe("#app", () => {
           return request(app)
             .get("/api/topics")
             .expect(200)
-            .then((response) => {
-              expect(response.body.topics).to.be.an("array");
-              response.body.topics.forEach((objTopic) => {
-                expect(objTopic).to.have.all.keys(["slug", "description"]);
+            .then((resp) => {
+              expect(resp.body.topics).to.be.an("array");
+              resp.body.topics.forEach((obj) => {
+                expect(obj).to.have.all.keys(["slug", "description"]);
               });
             });
         });

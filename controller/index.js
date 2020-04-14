@@ -1,2 +1,4 @@
 const { errInvalidPaths } = require("./errors.controller");
-module.exports = { errInvalidPaths };
+const { getAllTopics } = require("./topics.controller");
+
+module.exports = { errInvalidPaths, getAllTopics };
