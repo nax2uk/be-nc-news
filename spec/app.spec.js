@@ -5,6 +5,20 @@ const app = require("../app");
 
 describe("#app", () => {
   describe("#/api", () => {
+    // ERROR : 404 for invalid paths
+    describe("#handle error for invalid paths", () => {
+      it("status:404, gives error when invalid path given by user", () => {
+        return request(app)
+          .get("/invalid-path")
+          .expect(404)
+          .then((resp) => {
+            expect(resp.body.msg).to.equal(
+              "Invalid URL: Your specified path does not exist."
+            );
+          });
+      });
+    });
+
     // **GET** `/api`-
     describe("#GET", () => {});
 
