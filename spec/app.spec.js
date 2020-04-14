@@ -9,8 +9,20 @@ describe("#app", () => {
     describe("#GET", () => {});
 
     describe("#/topics", () => {
-      // **GET** `/api/topics`-
-      describe("#GET");
+      // **GET** `/api/topics`- checks response with an array of topic objects
+      describe("#GET", () => {
+        it("status: 200, responds with an array of topic objects", () => {
+          return request(app)
+            .get("/api/topics")
+            .expect(200)
+            .then((response) => {
+              expect(response.body.topics).to.be.an("array");
+              response.body.topics.forEach((objTopic) => {
+                expect(objTopic).to.have.all.keys(["slug", "description"]);
+              });
+            });
+        });
+      });
     });
 
     describe("#/users", () => {
