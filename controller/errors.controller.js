@@ -17,4 +17,11 @@ const errUserStatus405 = (req, resp) => {
   });
 };
 
-module.exports = { errInvalidPaths, errTopicStatus405, errUserStatus405 };
+const errArticleStatus405 = (req, resp) => { 
+  resp.status(405).send({
+    msg:
+      "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/articles/:article_id",
+  });
+}
+
+module.exports = { errInvalidPaths, errTopicStatus405, errUserStatus405, errArticleStatus405 };

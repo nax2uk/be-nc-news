@@ -69,7 +69,7 @@ describe("#app", () => {
             const invalidMethods = ["put", "delete", "patch", "post"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
-              [httpRequestMethod]("/api/users/aijoijfpamopeanbvieojmvokoim")
+              [httpRequestMethod]("/api/users/icellusedkars")
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
@@ -104,6 +104,25 @@ describe("#app", () => {
       describe("#GET", () => { });
 
       describe("/:article_id", () => {
+
+        // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/articles/:article_id
+        describe("#POST #PUT, #DELETE #PATCH", () => {
+          it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+            const invalidMethods = ["put", "delete", "patch", "post"];
+            const requests = invalidMethods.map((httpRequestMethod) => {
+              return request(app)
+              [httpRequestMethod]("/api/articles/1")
+                .expect(405)
+                .then((resp) => {
+                  expect(resp.body.msg).to.equal(
+                    "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/articles/:article_id"
+                  );
+                });
+            });
+            return Promise.all(requests);
+          });
+        });
+
         // **GET** `api/articles/:article_id
         describe("#GET", () => {
           it("status:200, responds with an article object including a comment count property", () => {
