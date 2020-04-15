@@ -23,7 +23,7 @@ describe("#app", () => {
     });
 
     // **GET** `/api`-
-    describe("#GET", () => {});
+    describe("#GET", () => { });
 
     describe("#/topics", () => {
       // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/topics
@@ -32,7 +32,7 @@ describe("#app", () => {
           const invalidMethods = ["put", "delete", "patch", "post"];
           const requests = invalidMethods.map((httpRequestMethod) => {
             return request(app)
-              [httpRequestMethod]("/api/topics")
+            [httpRequestMethod]("/api/topics")
               .expect(405)
               .then((resp) => {
                 expect(resp.body.msg).to.equal(
@@ -68,7 +68,7 @@ describe("#app", () => {
             const invalidMethods = ["put", "delete", "patch", "post"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
-                [httpRequestMethod]("/api/users/aijoijfpamopeanbvieojmvokoim")
+              [httpRequestMethod]("/api/users/aijoijfpamopeanbvieojmvokoim")
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
@@ -100,21 +100,39 @@ describe("#app", () => {
 
     describe("#/articles", () => {
       // **GET** `api/articles`
-      describe("#GET", () => {});
+      describe("#GET", () => { });
 
       describe("/:article_id", () => {
         // **GET** `api/articles/:article_id
-        describe("#GET", () => {});
+        describe("#GET", () => {
+          it("status:200, responds with an article object including a comment count property", () => {
+            return request(app)
+              .get("/api/articles/1")
+              .expect(200)
+              .then((resp) => {
+                expect(resp.body.article).to.have.all.keys([
+                  "author",
+                  "title",
+                  "article_id",
+                  "body",
+                  "topic",
+                  "created_at",
+                  "votes",
+                  "comment_count",
+                ]);
+              });
+          });
+        });
 
         // **PATCH** `api/articles/:article_id
-        describe("#PATCH", () => {});
+        describe("#PATCH", () => { });
 
         describe("#/comments", () => {
           // **GET** `api/articles/:article_id/comments
-          describe("#GET", () => {});
+          describe("#GET", () => { });
 
           // **POST** `api/articles/:article_id/comments
-          describe("#POST", () => {});
+          describe("#POST", () => { });
         });
       });
     });
@@ -122,9 +140,9 @@ describe("#app", () => {
     describe("#/comments", () => {
       describe("#/:comment_id", () => {
         // **PATCH** `/api/comments/:comment_id`
-        describe("#PATCH", () => {});
+        describe("#PATCH", () => { });
         // **DELETE** `/api/comments/:comment_id`
-        describe("#DELETE", () => {});
+        describe("#DELETE", () => { });
       });
     });
   });

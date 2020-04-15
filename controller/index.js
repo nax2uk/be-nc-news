@@ -5,6 +5,7 @@ const {
 } = require("./errors.controller");
 const { getAllTopics } = require("./topics.controller");
 const { getUser } = require("./users.controllers");
+const { getArticle } = require('./articles.controller')
 
 module.exports = {
   errInvalidPaths,
@@ -12,4 +13,5 @@ module.exports = {
   errUserStatus405,
   getUser,
   getAllTopics,
+  getArticle
 };
