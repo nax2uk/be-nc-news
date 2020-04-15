@@ -16,27 +16,32 @@ const fetchArticle = (articleID) => {
 }
 
 const updateArticle = (articleID, { inc_votes }) => {
-  const article_id = parseInt(articleID);
-  return connection('articles')
-    .select('*')
-    .where('article_id', article_id)
-    .then(arrResult => {
-      if (arrResult.length === 0)
-        return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exist.' })
-      else {
-        const newVotes = inc_votes + arrResult[0].votes;
 
-        return connection('articles')
-          .where({ article_id: article_id })
-          .update({ votes: newVotes })
-      }
-    })
-    .then(() => {
-      return fetchArticle(articleID);
-    })
-    .then(objArticle => {
-      return objArticle;
-    })
+  if (inc_votes === undefined) {
+    return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data for updating votes.' })
+  } else {
+    const article_id = parseInt(articleID);
+    return connection('articles')
+      .select('*')
+      .where('article_id', article_id)
+      .then(arrResult => {
+        if (arrResult.length === 0)
+          return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exist.' })
+        else {
+          const newVotes = inc_votes + arrResult[0].votes;
+
+          return connection('articles')
+            .where({ article_id: article_id })
+            .update({ votes: newVotes })
+        }
+      })
+      .then(() => {
+        return fetchArticle(articleID);
+      })
+      .then(objArticle => {
+        return objArticle;
+      })
+  }
 }
 
 const insertComment = (articleID, objComment) => {

@@ -227,6 +227,7 @@ describe("#app", () => {
                 expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
               })
           })
+
           // ERROR: **PATCH** `api/articles/:article_id - status 400
           it('status: 400, article_id out of range for type integer', () => {
             return request(app)
@@ -235,6 +236,17 @@ describe("#app", () => {
               .expect(400)
               .then(resp => {
                 expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+              })
+          })
+
+          // ERROR: **PATCH** `api/articles/:article_id - status 400
+          it('status: 400, no key inc_votes in request body', () => {
+            return request(app)
+              .patch('/api/articles/aiojijojeofnuninfe')
+              .send({ votes: 4 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data for updating votes.')
               })
           })
         });
@@ -295,8 +307,6 @@ describe("#app", () => {
         })
       });
     });
-
-
 
     describe("#/comments", () => {
       describe("#/:comment_id", () => {
