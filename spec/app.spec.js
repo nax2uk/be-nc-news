@@ -191,7 +191,7 @@ describe("#app", () => {
               .send({ inc_votes: -1 })
               .expect(200)
               .then(resp => {
-                console.log(resp.body.article);
+
                 expect(resp.body.article).to.have.all.keys([
                   "author",
                   "title",
