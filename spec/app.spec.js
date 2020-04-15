@@ -137,8 +137,10 @@ describe("#app", () => {
           });
         });
 
-        // **GET** `api/articles/:article_id
+        // **GET** `api/articles/:article_id 
         describe("#GET", () => {
+
+          // **GET** `api/articles/:article_id - status 200
           it("status:200, responds with an article object including a comment count property", () => {
             return request(app)
               .get("/api/articles/4")
@@ -157,6 +159,16 @@ describe("#app", () => {
                 expect(resp.body.article.comment_count).to.equal('0');
               });
           });
+
+        // ERROR: **GET** `api/articles/:article_id - status 404
+        it('status:404, article_id does not exist',()=>{
+          return request(app)
+          .get('/api/articles/1111111111')
+          .expect(404)
+          .then(resp=>{
+            expect(resp.body.msg).to.equals('Resource Not Found: article_id does not exists.')
+          })
+        })
         });
 
         // **PATCH** `api/articles/:article_id

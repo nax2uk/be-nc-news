@@ -12,7 +12,8 @@ const fetchArticle = (articleID) => {
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .groupBy('articles.article_id')
     .then(result => {
-      console.log(result);
+      if (result.length===0)
+        return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exists.'})
       return result[0];
     })
 }

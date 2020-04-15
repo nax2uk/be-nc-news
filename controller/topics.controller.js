@@ -8,7 +8,7 @@ const getAllTopics = (req, resp, next) => {
   .catch(err => { 
       console.log(err);
       next(err);
-    })
+  })
 };
 
 module.exports = { getAllTopics };
