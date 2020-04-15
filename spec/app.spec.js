@@ -205,8 +205,9 @@ describe("#app", () => {
                 expect(resp.body.article.votes).to.equal(99);
               })
           })
+
           // ERROR: **PATCH** `api/articles/:article_id - status 404
-          it('status: 404, non-existent article_id given', () => {
+          it('status: 404, article_id does not exist', () => {
             return request(app)
               .patch('/api/articles/909090')
               .send({ inc_votes: -1 })
@@ -217,9 +218,19 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 404, invalid article type given', () => {
+          it('status: 400, article_id is an invalid type', () => {
             return request(app)
               .patch('/api/articles/aiojijojeofnuninfe')
+              .send({ inc_votes: -1 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+              })
+          })
+          // ERROR: **PATCH** `api/articles/:article_id - status 400
+          it('status: 400, article_id out of range for type integer', () => {
+            return request(app)
+              .patch('/api/articles/99999999999')
               .send({ inc_votes: -1 })
               .expect(400)
               .then(resp => {
@@ -245,18 +256,55 @@ describe("#app", () => {
                   expect(resp.body.comment).to.have.all.keys(['author', 'body', 'article_id', 'votes', 'created_at']);
                 })
             })
+
+            // ERROR: **POST** `api/articles/:article_id/comments - status 404
+            it('status: 404, article_id does not exist', () => {
+              return request(app)
+                .post('/api/articles/9999/comments')
+                .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
+                .expect(404)
+                .then(resp => {
+                  expect(resp.body.msg).to.equal('Resource not found: article_id does not exist.')
+                })
+            })
+
+            // ERROR: **POST** `api/articles/:article_id/comments - status 400
+            it('status: 400, article_id out of range for type integer', () => {
+              return request(app)
+                .post('/api/articles/99999999999/comments')
+                .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
+                .expect(400)
+                .then(resp => {
+                  expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                })
+            })
+
+
+            // ERROR: **POST** `api/articles/:article_id/comments - status 400
+            it('status: 400, invalid type for article_id', () => {
+              return request(app)
+                .post('/api/articles/okpkk/comments')
+                .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
+                .expect(400)
+                .then(resp => {
+                  expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data');
+                })
+            });
           })
-        });
+
+        })
       });
     });
-  });
 
-  describe("#/comments", () => {
-    describe("#/:comment_id", () => {
-      // **PATCH** `/api/comments/:comment_id`
-      describe("#PATCH", () => { });
-      // **DELETE** `/api/comments/:comment_id`
-      describe("#DELETE", () => { });
+
+
+    describe("#/comments", () => {
+      describe("#/:comment_id", () => {
+        // **PATCH** `/api/comments/:comment_id`
+        describe("#PATCH", () => { });
+        // **DELETE** `/api/comments/:comment_id`
+        describe("#DELETE", () => { });
+      });
     });
   });
 });

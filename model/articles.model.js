@@ -40,12 +40,13 @@ const updateArticle = (articleID, { inc_votes }) => {
 }
 
 const insertComment = (articleID, objComment) => {
-
+  const article_id = parseInt(articleID)
+  console.log('in insertComment ' + article_id)
   return connection('comments')
-    .insert({ author: objComment.username, article_id: parseInt(articleID), body: objComment.body })
+    .insert({ author: objComment.username, article_id: article_id, body: objComment.body })
     .returning(['author', 'body', 'article_id', 'votes', 'created_at'])
-    .then(result => {
-      return result[0];
+    .then(arrResult => {
+      return arrResult[0];
     })
 }
 

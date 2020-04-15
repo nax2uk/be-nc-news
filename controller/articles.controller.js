@@ -20,10 +20,7 @@ const postComment = (req, resp, next) => {
     .then(objComment => {
       resp.status(201).send({ comment: objComment })
     })
-    .catch(err => {
-      console.log(err);
-      next(err)
-    })
+    .catch(next);
 
 }
 module.exports = { getArticle, patchArticle, postComment };
