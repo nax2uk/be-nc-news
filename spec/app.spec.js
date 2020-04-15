@@ -101,11 +101,11 @@ describe("#app", () => {
           });
 
           // ERROR: **GET** `api/users/:username`- status 404
-          it ('status: 404 - username does not exist',()=>{
-              return request(app)
+          it('status: 404 - username does not exist', () => {
+            return request(app)
               .get('/api/users/oiomjijoaerhoahro')
               .expect(404)
-              .then(resp=>{
+              .then(resp => {
                 expect(resp.body.msg).to.equals('Resource Not Found: Username does not exist')
               })
           })
@@ -160,15 +160,25 @@ describe("#app", () => {
               });
           });
 
-        // ERROR: **GET** `api/articles/:article_id - status 404
-        it('status:404, article_id does not exist',()=>{
-          return request(app)
-          .get('/api/articles/1111111111')
-          .expect(404)
-          .then(resp=>{
-            expect(resp.body.msg).to.equals('Resource Not Found: article_id does not exists.')
+          // ERROR: **GET** `api/articles/:article_id - status 404
+          it('status:404, article_id does not exist', () => {
+            return request(app)
+              .get('/api/articles/1111111111')
+              .expect(404)
+              .then(resp => {
+                expect(resp.body.msg).to.equals('Resource Not Found: article_id does not exists.')
+              })
           })
-        })
+          // ERROR: **GET** `api/articles/:article_id - status 400
+          it('status:400, article_id is an invalid type', () => {
+            return request(app)
+              .get('/api/articles/iuiuo')
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+              })
+          })
+
         });
 
         // **PATCH** `api/articles/:article_id

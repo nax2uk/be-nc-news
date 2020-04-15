@@ -1,5 +1,11 @@
 const handlePsqlErrors = (err, req, resp, next) => {
   if (err.code) {
+    switch (err.code) {
+      case '22P02':
+        resp.status(400).send({ msg: 'Bad Request: Invalid input type for article data' })
+        break;
+      default:
+    }
   } else next(err);
 };
 const handleCustomErrors = (err, req, resp, next) => {
