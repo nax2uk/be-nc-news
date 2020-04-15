@@ -15,9 +15,9 @@ const fetchArticle = (articleID) => {
     })
 }
 
-const updateArticle = (articleID, { inc_votes }) => {
+const updateArticle = (articleID, { inc_votes, ...restOfObj }) => {
 
-  if (inc_votes === undefined) {
+  if (inc_votes === undefined || Object.keys(restOfObj).length > 0) {
     return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data for updating votes.' })
   } else {
     const article_id = parseInt(articleID);

@@ -11,7 +11,10 @@ const patchArticle = (req, resp, next) => {
 
   updateArticle(req.params.articleID, req.body).then(objArticle => {
     resp.status(200).send({ article: objArticle })
-  }).catch(next)
+  }).catch(err => {
+    console.log(err);
+    next(err);
+  })
 }
 
 const postComment = (req, resp, next) => {

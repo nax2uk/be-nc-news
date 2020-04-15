@@ -249,6 +249,28 @@ describe("#app", () => {
                 expect(resp.body.msg).to.equal('Bad Request: Invalid input data for updating votes.')
               })
           })
+
+          // ERROR: **PATCH** `api/articles/:article_id - status 400
+          it('status: 400, invalid inc_votes', () => {
+            return request(app)
+              .patch('/api/articles/3')
+              .send({ inc_votes: 'cat' })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+              })
+          })
+
+          // ERROR: **PATCH** `api/articles/:article_id - status 400
+          it('status: 400, invalid body', () => {
+            return request(app)
+              .patch('/api/articles/3')
+              .send({ inc_votes: 1, name: 'Mitch' })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data for updating votes.')
+              })
+          })
         });
 
         describe("#/comments", () => {
