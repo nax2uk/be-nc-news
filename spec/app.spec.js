@@ -12,7 +12,7 @@ describe("#app", () => {
     describe("#handle error for invalid paths", () => {
       it("status:404, gives error when invalid path given by user", () => {
         return request(app)
-          .get("/invalid-path")
+          .get("/not-a-route")
           .expect(404)
           .then((resp) => {
             expect(resp.body.msg).to.equal(
