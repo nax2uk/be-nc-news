@@ -27,7 +27,8 @@ describe("#app", () => {
     describe("#GET", () => { });
 
     describe("#/topics", () => {
-      // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/topics
+
+      // ERROR `/api/topics `: 405 for **POST**, **PATCH**, **PUT** and **DELETE**
       describe("#POST #PUT, #DELETE #PATCH", () => {
         it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
           const invalidMethods = ["put", "delete", "patch", "post"];
@@ -45,8 +46,9 @@ describe("#app", () => {
         });
       });
 
-      // **GET** `/api/topics`- checks response with an array of topic objects
+      // **GET** `/api/topics`
       describe("#GET", () => {
+        // **GET** `/api/topics`- status 200: 
         it("status: 200, responds with an array of topic objects", () => {
           return request(app)
             .get("/api/topics")
@@ -81,8 +83,10 @@ describe("#app", () => {
           });
         });
 
-        // **GET** `api/users/:user_id`
+        // **GET** `api/users/:username`
         describe("#GET", () => {
+
+          // **GET** `api/users/:username`- status 200
           it("status: 200, responds with an array of user objects", () => {
             return request(app)
               .get("/api/users/icellusedkars")
@@ -95,6 +99,16 @@ describe("#app", () => {
                 ]);
               });
           });
+
+          // ERROR: **GET** `api/users/:username`- status 404
+          it ('status: 404 - username does not exist',()=>{
+              return request(app)
+              .get('/api/users/oiomjijoaerhoahro')
+              .expect(404)
+              .then(resp=>{
+                expect(resp.body.msg).to.equals('Resource Not Found: Username does not exist')
+              })
+          })
         });
       });
     });
