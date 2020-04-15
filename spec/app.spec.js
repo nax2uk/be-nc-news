@@ -233,18 +233,31 @@ describe("#app", () => {
           describe("#GET", () => { });
 
           // **POST** `api/articles/:article_id/comments
-          describe("#POST", () => { });
+          describe("#POST", () => {
+
+            // **POST** `api/articles/:article_id/comments - status 201
+            it('status: 201, created comments successfully', () => {
+              return request(app)
+                .post('/api/articles/2/comments')
+                .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
+                .expect(201)
+                .then(resp => {
+                  expect(resp.body.comment).to.have.all.keys(['author', 'body', 'article_id', 'votes', 'created_at']);
+                })
+            })
+          })
         });
       });
     });
+  });
 
-    describe("#/comments", () => {
-      describe("#/:comment_id", () => {
-        // **PATCH** `/api/comments/:comment_id`
-        describe("#PATCH", () => { });
-        // **DELETE** `/api/comments/:comment_id`
-        describe("#DELETE", () => { });
-      });
+  describe("#/comments", () => {
+    describe("#/:comment_id", () => {
+      // **PATCH** `/api/comments/:comment_id`
+      describe("#PATCH", () => { });
+      // **DELETE** `/api/comments/:comment_id`
+      describe("#DELETE", () => { });
     });
   });
 });
+

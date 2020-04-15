@@ -42,4 +42,14 @@ const updateArticle = (articleID, { inc_votes }) => {
     })
 }
 
-module.exports = { fetchArticle, updateArticle }
+const insertComment = (articleID, objComment) => {
+
+  return connection('comments')
+    .insert({ author: objComment.username, article_id: parseInt(articleID), body: objComment.body })
+    .returning(['author', 'body', 'article_id', 'votes', 'created_at'])
+    .then(result => {
+      return result[0];
+    })
+}
+
+module.exports = { fetchArticle, updateArticle, insertComment }
