@@ -5,12 +5,16 @@ const errInvalidPaths = (req, resp) => {
 };
 
 const errTopicStatus405 = (req, resp) => {
-  resp
-    .status(405)
-    .send({
-      msg:
-        "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/topics",
-    });
+  resp.status(405).send({
+    msg: "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/topics",
+  });
 };
 
-module.exports = { errInvalidPaths, errTopicStatus405 };
+const errUserStatus405 = (req, resp) => {
+  resp.status(405).send({
+    msg:
+      "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/users/:username",
+  });
+};
+
+module.exports = { errInvalidPaths, errTopicStatus405, errUserStatus405 };
