@@ -17,10 +17,10 @@ const errUserStatus405 = (req, resp) => {
   });
 };
 
-const errArticleStatus405 = (req, resp) => { 
+const errArticleStatus405 = (req, resp) => {
   resp.status(405).send({
     msg:
-      "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/articles/:article_id",
+      "Method Not Allowed: for HTTP POST, PUT and DELETE /api/articles/:article_id",
   });
 }
 

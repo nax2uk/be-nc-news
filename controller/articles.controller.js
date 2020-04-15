@@ -1,4 +1,4 @@
-const { fetchArticle } = require('../model')
+const { fetchArticle, updateArticle } = require('../model')
 
 const getArticle = (req, resp, next) => {
   console.log('in getArticle')
@@ -10,4 +10,14 @@ const getArticle = (req, resp, next) => {
   })
 }
 
-module.exports = { getArticle };
+const patchArticle = (req, resp, next) => {
+  console.log('in patchArticle');
+  updateArticle(req.params.articleID, req.body).then(objArticle => {
+    resp.status(200).send({ article: objArticle })
+  }).catch(err => {
+    console.log(err);
+    next(err);
+  })
+}
+
+module.exports = { getArticle, patchArticle };

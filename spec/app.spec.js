@@ -119,17 +119,17 @@ describe("#app", () => {
 
       describe("/:article_id", () => {
 
-        // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/articles/:article_id
-        describe("#POST #PUT, #DELETE #PATCH", () => {
+        // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
+        describe("#POST #PUT, #DELETE", () => {
           it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
-            const invalidMethods = ["put", "delete", "patch", "post"];
+            const invalidMethods = ["put", "delete", "post"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
               [httpRequestMethod]("/api/articles/1")
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
-                    "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/articles/:article_id"
+                    "Method Not Allowed: for HTTP POST, PUT and DELETE /api/articles/:article_id"
                   );
                 });
             });
@@ -182,7 +182,30 @@ describe("#app", () => {
         });
 
         // **PATCH** `api/articles/:article_id
-        describe("#PATCH", () => { });
+        describe("#PATCH", () => {
+
+          // **PATCH** `api/articles/:article_id - status 200
+          it('status:200, responds with an article object including comment_count property', () => {
+            return request(app)
+              .patch('/api/articles/1')
+              .send({ inc_votes: -1 })
+              .expect(200)
+              .then(resp => {
+                console.log(resp.body.article);
+                expect(resp.body.article).to.have.all.keys([
+                  "author",
+                  "title",
+                  "article_id",
+                  "body",
+                  "topic",
+                  "created_at",
+                  "votes",
+                  "comment_count",
+                ]);
+                expect(resp.body.article.votes).to.equal(99);
+              })
+          })
+        });
 
         describe("#/comments", () => {
           // **GET** `api/articles/:article_id/comments

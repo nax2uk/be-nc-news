@@ -12,10 +12,30 @@ const fetchArticle = (articleID) => {
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .groupBy('articles.article_id')
     .then(result => {
-      if (result.length===0)
-        return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exists.'})
+      if (result.length === 0)
+        return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exists.' })
       return result[0];
     })
 }
 
-module.exports = { fetchArticle }
+const updateArticle = (articleID, { inc_votes }) => {
+  const article_id = parseInt(articleID);
+  return connection('articles')
+    .select('*')
+    .where('article_id', article_id)
+    .then(([{ votes }]) => {
+      const newVotes = inc_votes + votes;
+      console.log(newVotes);
+      return connection('articles')
+        .where({ article_id: article_id })
+        .update({ votes: newVotes })
+    })
+    .then(() => {
+      return fetchArticle(articleID);
+    })
+    .then(objArticle => {
+      return objArticle;
+    })
+}
+
+module.exports = { fetchArticle, updateArticle }
