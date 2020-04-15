@@ -215,6 +215,17 @@ describe("#app", () => {
                 expect(resp.body.msg).to.equal('Resource Not Found: article_id does not exist.')
               })
           })
+
+          // ERROR: **PATCH** `api/articles/:article_id - status 400
+          it('status: 404, invalid article type given', () => {
+            return request(app)
+              .patch('/api/articles/aiojijojeofnuninfe')
+              .send({ inc_votes: -1 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+              })
+          })
         });
 
         describe("#/comments", () => {
