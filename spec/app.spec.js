@@ -26,6 +26,24 @@ describe("#app", () => {
     describe("#GET", () => {});
 
     describe("#/topics", () => {
+      // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/topics
+      describe("#POST #PUT, #DELETE #PATCH", () => {
+        it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+          const invalidMethods = ["put", "delete", "patch", "post"];
+          const requests = invalidMethods.map((httpRequestMethod) => {
+            return request(app)
+              [httpRequestMethod]("/api/topics")
+              .expect(405)
+              .then((resp) => {
+                expect(resp.body.msg).to.equal(
+                  "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/topics"
+                );
+              });
+          });
+          return Promise.all(requests);
+        });
+      });
+
       // **GET** `/api/topics`- checks response with an array of topic objects
       describe("#GET", () => {
         it("status: 200, responds with an array of topic objects", () => {
