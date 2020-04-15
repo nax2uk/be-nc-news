@@ -108,7 +108,7 @@ describe("#app", () => {
         describe("#GET", () => {
           it("status:200, responds with an article object including a comment count property", () => {
             return request(app)
-              .get("/api/articles/1")
+              .get("/api/articles/4")
               .expect(200)
               .then((resp) => {
                 expect(resp.body.article).to.have.all.keys([
@@ -121,6 +121,7 @@ describe("#app", () => {
                   "votes",
                   "comment_count",
                 ]);
+                expect(resp.body.article.comment_count).to.equal('0');
               });
           });
         });

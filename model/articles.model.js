@@ -8,7 +8,7 @@ const fetchArticle = (articleID) => {
   return connection('articles')
     .select('articles.*')
     .where('articles.article_id', parseInt(articleID))
-    .count('articles.article_id as comment_count')
+    .count('comments.article_id as comment_count')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .groupBy('articles.article_id')
     .then(result => {
