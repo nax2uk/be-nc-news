@@ -1,2 +1,3 @@
 const { fetchAllTopics } = require("./topics.model");
-module.exports = { fetchAllTopics };
+const { fetchUser } = require("./users.model");
+module.exports = { fetchAllTopics, fetchUser };

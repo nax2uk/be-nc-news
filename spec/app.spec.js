@@ -61,8 +61,23 @@ describe("#app", () => {
     });
 
     describe("#/users", () => {
-      // **GET** `api/users`
-      describe("#GET", () => {});
+      describe("#/:username", () => {
+        // **GET** `api/users/:user_id`
+        describe("#GET", () => {
+          it("status: 200, responds with an array of user objects", () => {
+            return request(app)
+              .get("/api/users/icellusedkars")
+              .expect(200)
+              .then((resp) => {
+                expect(resp.body.user).to.have.all.keys([
+                  "avatar_url",
+                  "name",
+                  "username",
+                ]);
+              });
+          });
+        });
+      });
     });
 
     describe("#/articles", () => {
