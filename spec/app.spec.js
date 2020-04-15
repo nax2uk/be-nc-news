@@ -4,6 +4,7 @@ const request = require("supertest");
 const app = require("../app");
 const connection = require("../db/connection");
 
+beforeEach(() => connection.seed.run())
 after(() => connection.destroy());
 
 describe("#app", () => {
