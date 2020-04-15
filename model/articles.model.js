@@ -23,12 +23,16 @@ const updateArticle = (articleID, { inc_votes }) => {
   return connection('articles')
     .select('*')
     .where('article_id', article_id)
-    .then(([{ votes }]) => {
-      const newVotes = inc_votes + votes;
-      console.log(newVotes);
-      return connection('articles')
-        .where({ article_id: article_id })
-        .update({ votes: newVotes })
+    .then(arrResult => {
+      if (arrResult.length === 0)
+        return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exist.' })
+      else {
+        const newVotes = inc_votes + arrResult[0].votes;
+        console.log(newVotes);
+        return connection('articles')
+          .where({ article_id: article_id })
+          .update({ votes: newVotes })
+      }
     })
     .then(() => {
       return fetchArticle(articleID);

@@ -205,6 +205,16 @@ describe("#app", () => {
                 expect(resp.body.article.votes).to.equal(99);
               })
           })
+          // ERROR: **PATCH** `api/articles/:article_id - status 404
+          it('status: 404, non-existent article_id given', () => {
+            return request(app)
+              .patch('/api/articles/909090')
+              .send({ inc_votes: -1 })
+              .expect(404)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Resource Not Found: article_id does not exist.')
+              })
+          })
         });
 
         describe("#/comments", () => {
