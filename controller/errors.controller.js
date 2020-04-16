@@ -4,24 +4,8 @@ const errInvalidPaths = (req, resp) => {
     .send({ msg: "Invalid URL: Your specified path does not exist." });
 };
 
-const errTopicStatus405 = (req, resp) => {
-  resp.status(405).send({
-    msg: "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/topics",
-  });
-};
-
-const errUserStatus405 = (req, resp) => {
-  resp.status(405).send({
-    msg:
-      "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/users/:username",
-  });
-};
-
-const errArticleStatus405 = (req, resp) => {
-  resp.status(405).send({
-    msg:
-      "Method Not Allowed: for HTTP POST, PUT and DELETE /api/articles/:article_id",
-  });
+const errStatus405 = (req, resp) => {
+  resp.status(405).send({ msg: `Method Not Allowed: for HTTP ${req.method} at ${req.originalUrl}` })
 }
 
-module.exports = { errInvalidPaths, errTopicStatus405, errUserStatus405, errArticleStatus405 };
+module.exports = { errInvalidPaths, errStatus405 };

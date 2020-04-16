@@ -41,7 +41,7 @@ describe("#app", () => {
               .expect(405)
               .then((resp) => {
                 expect(resp.body.msg).to.equal(
-                  "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/topics"
+                  `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/topics`
                 );
               });
           });
@@ -78,7 +78,7 @@ describe("#app", () => {
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
-                    "Method Not Allowed: for HTTP POST, PUT, PATCH and DELETE /api/users/:username"
+                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/users/icellusedkars`
                   );
                 });
             });
@@ -132,7 +132,7 @@ describe("#app", () => {
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
-                    "Method Not Allowed: for HTTP POST, PUT and DELETE /api/articles/:article_id"
+                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/articles/1`
                   );
                 });
             });
@@ -140,7 +140,7 @@ describe("#app", () => {
           });
         });
 
-        // **GET** `api/articles/:article_id 
+        // **GET** `api / articles /: article_id 
         describe("#GET", () => {
 
           // **GET** `api/articles/:article_id - status 200

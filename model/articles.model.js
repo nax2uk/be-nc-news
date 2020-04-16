@@ -61,7 +61,6 @@ const fetchComments = (articleID, { sort_by, order }) => {
     .where('article_id', articleID)
     .orderBy(sort_by || 'created_at', order || 'asc')
     .then(arrResult => {
-      console.log(arrResult)
       return arrResult;
     })
 }
