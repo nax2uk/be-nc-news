@@ -3,10 +3,7 @@ const { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComm
 const getArticles = (req, resp, next) => {
   fetchArticles(req.query).then(arrObjArticles => {
     resp.status(200).send({ articles: arrObjArticles })
-  }).catch(err => {
-    console.log(err);
-    next(err);
-  });
+  }).catch(next);
 }
 
 const getArticleById = (req, resp, next) => {
@@ -39,9 +36,6 @@ const getComments = (req, resp, next) => {
     .then(arrOfObjComments => {
       resp.status(200).send({ comments: arrOfObjComments });
     })
-    .catch(err => {
-      console.log(err);
-      next(err)
-    });
+    .catch(next)
 }
 module.exports = { getArticles, getArticleById, patchArticle, postComment, getComments };

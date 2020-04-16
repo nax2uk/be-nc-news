@@ -18,9 +18,9 @@ const fetchArticles = ({ sort_by, order, author, topic }) => {
         if (topic) topicQuery.where({ topic });
       })
       .then(result => {
-        if (result.length == 0)
-          return Promise.reject({ status: 404, msg: 'Resource not found: topic or author query does not exist' })
-
+        if (result.length == 0) {
+          return Promise.reject({ status: 404, msg: 'Resource not found: cannot display results for query' })
+        }
         return result;
       })
   }
@@ -82,15 +82,17 @@ const insertComment = (articleID, objComment) => {
 }
 
 const fetchComments = (articleID, { sort_by, order }) => {
+  if (order && !(order === 'asc' || order === 'desc')) {
+    return Promise.reject({ status: 400, msg: 'Bad Request: invalid value for key order in query' })
+  } else {
+    return connection('comments')
+      .orderBy([{ column: sort_by || 'created_at', order: order || 'asc' }]) //order || 'asc'
+      .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
+      .where('article_id', articleID)
 
-  return connection('comments')
-    .orderBy([{ column: sort_by || 'created_at', order: order || 'asc' }]) //order || 'asc'
-    .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
-    .where('article_id', articleID)
-
-    .then(arrResult => {
-      console.log(arrResult);
-      return arrResult;
-    })
+      .then(arrResult => {
+        return arrResult;
+      })
+  }
 }
 module.exports = { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments }

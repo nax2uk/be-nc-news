@@ -118,7 +118,7 @@ describe("#app", () => {
 
     describe("#/articles", () => {
       // **GET** `api/articles`
-      describe.only("#GET", () => {
+      describe("#GET", () => {
 
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
@@ -202,8 +202,28 @@ describe("#app", () => {
             .get('/api/articles?topic=bored&&author=azlina')
             .expect(404)
             .then(resp => {
-              expect(resp.body.msg).to.equals('Resource not found: topic or author query does not exist')
+              expect(resp.body.msg).to.equals('Resource not found: cannot display results for query')
             })
+        })
+
+        // **GET** `api/articles` - status:404
+        it('status:404, author exists in db but no articles associated', () => {
+          return request(app)
+            .get('/api/articles?author=lurker')
+            .expect(404)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Resource not found: cannot display results for query')
+            })//
+        })
+
+        // **GET** `api/articles` - status:404
+        it('status:404, topic exists in db but no articles associated', () => {
+          return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(404)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Resource not found: cannot display results for query')
+            })//
         })
       });
 
@@ -424,12 +444,12 @@ describe("#app", () => {
             })
 
             // **GET `api/articles/:article_id/comments - status 400
-            it('status:400, invalid syntax for order value', () => {
+            it('status:400, order!==asc or desc', () => {
               return request(app)
                 .get('/api/articles/9/comments?order=abc')
                 .expect(400)
                 .then(resp => {
-                  expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+                  expect(resp.body.msg).to.equals('Bad Request: invalid value for key order in query')
                 })
             })
           });
