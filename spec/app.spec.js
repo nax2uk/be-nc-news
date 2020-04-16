@@ -303,7 +303,7 @@ describe("#app", () => {
               .get('/api/articles/iuiuo')
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
 
@@ -352,7 +352,7 @@ describe("#app", () => {
               .send({ inc_votes: -1 })
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
 
@@ -363,7 +363,7 @@ describe("#app", () => {
               .send({ inc_votes: -1 })
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
 
@@ -385,7 +385,7 @@ describe("#app", () => {
               .send({ inc_votes: 'cat' })
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
 
@@ -505,7 +505,7 @@ describe("#app", () => {
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
                 .expect(400)
                 .then(resp => {
-                  expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data')
+                  expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
                 })
             })
 
@@ -517,7 +517,7 @@ describe("#app", () => {
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
                 .expect(400)
                 .then(resp => {
-                  expect(resp.body.msg).to.equal('Bad Request: Invalid input type for article data');
+                  expect(resp.body.msg).to.equal('Bad Request: Invalid input data.');
                 })
             });
           })
@@ -526,7 +526,7 @@ describe("#app", () => {
       });
     });
 
-    describe.only("#/comments", () => {
+    describe("#/comments", () => {
       describe("#/:comment_id", () => {
         // **PATCH** `/api/comments/:comment_id` - status 200
         describe("#PATCH", () => {
@@ -540,11 +540,78 @@ describe("#app", () => {
                 expect(resp.body.comment.votes).to.be.equal(11)
               })
           })
+
+          // ERROR: **PATCH** `api/comment/:comment_id - status 404
+          it('status:404, comment_id does not exist', () => {
+            return request(app)
+              .patch('/api/comments/909090')
+              .send({ inc_votes: -1 })
+              .expect(404)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Resource Not Found: comment_id does not exist.')
+              })
+          })
+
+          // ERROR: **PATCH** `api/comments/:comment_id - status 400
+          it('status:400, comment_id is an invalid type', () => {
+            return request(app)
+              .patch('/api/comments/aiojijojeofnuninfe')
+              .send({ inc_votes: -1 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+              })
+          })
+
+          // ERROR: **PATCH** `api/comments/:comment_id - status 400
+          it('status: 400, comment_id out of range for type integer', () => {
+            return request(app)
+              .patch('/api/comments/99999999999')
+              .send({ inc_votes: -1 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+              })
+          })
+
+          // ERROR: **PATCH** `api/comments/:comment_id - status 400
+          it('status:400, no key inc_votes in request body', () => {
+            return request(app)
+              .patch('/api/comments/aiojijojeofnuninfe')
+              .send({ votes: 4 })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+              })
+          })
+
+          // ERROR: **PATCH** `api/comments/:comment_id - status 400
+          it('status:400, invalid inc_votes', () => {
+            return request(app)
+              .patch('/api/comments/3')
+              .send({ inc_votes: 'cat' })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+              })
+          })
+
+          // ERROR: **PATCH** `api/comments/:comment_id - status 400
+          it('status:400, invalid body', () => {
+            return request(app)
+              .patch('/api/comments/3')
+              .send({ inc_votes: 1, name: 'Mitch' })
+              .expect(400)
+              .then(resp => {
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+              })
+          })
         });
-        // **DELETE** `/api/comments/:comment_id`
-        describe("#DELETE", () => { });
       });
+      // **DELETE** `/api/comments/:comment_id`
+      describe("#DELETE", () => { });
     });
   });
 });
+
 

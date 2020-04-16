@@ -5,10 +5,7 @@ const patchComment = (req, resp, next) => {
     .then(objComment => {
       resp.status(200).send({ comment: objComment })
     })
-    .catch(err => {
-      console.log(err);
-      next(err)
-    })
+    .catch(next);
 }
 
 module.exports = { patchComment };
