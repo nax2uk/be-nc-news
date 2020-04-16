@@ -1,5 +1,5 @@
 const routerArticles = require("express").Router();
-const { getArticle, patchArticle, postComment, errArticleStatus405 } = require('../controller');
+const { getArticle, patchArticle, postComment, getComments, errArticleStatus405 } = require('../controller');
 
 
 routerArticles
@@ -11,5 +11,6 @@ routerArticles
 routerArticles
   .route('/:articleID/comments')
   .post(postComment)
+  .get(getComments)
 
 module.exports = routerArticles;

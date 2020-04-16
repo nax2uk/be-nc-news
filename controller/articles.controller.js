@@ -1,4 +1,4 @@
-const { fetchArticle, updateArticle, insertComment } = require('../model')
+const { fetchArticle, updateArticle, insertComment, fetchComments } = require('../model')
 
 const getArticle = (req, resp, next) => {
 
@@ -11,10 +11,7 @@ const patchArticle = (req, resp, next) => {
 
   updateArticle(req.params.articleID, req.body).then(objArticle => {
     resp.status(200).send({ article: objArticle })
-  }).catch(err => {
-    console.log(err);
-    next(err);
-  })
+  }).catch(next)
 }
 
 const postComment = (req, resp, next) => {
@@ -26,4 +23,16 @@ const postComment = (req, resp, next) => {
     .catch(next);
 
 }
-module.exports = { getArticle, patchArticle, postComment };
+
+const getComments = (req, resp, next) => {
+  fetchComments(req.params.articleID)
+    .then(arrOfObjComments => {
+      console.log(arrOfObjComments);
+      resp.status(200).send({ comments: arrOfObjComments });
+    })
+    .catch(err => {
+      console.log(err);
+      next(err)
+    });
+}
+module.exports = { getArticle, patchArticle, postComment, getComments };

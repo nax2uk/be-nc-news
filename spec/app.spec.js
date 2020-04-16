@@ -275,7 +275,21 @@ describe("#app", () => {
 
         describe("#/comments", () => {
           // **GET** `api/articles/:article_id/comments
-          describe("#GET", () => { });
+          describe("#GET", () => {
+            it('status:200, responds with an array of comment objects', () => {
+              return request(app)
+                .get('/api/articles/9/comments')
+                .expect(200)
+                .then(resp => {
+                  expect(resp.body.comments).to.be.an('array')
+                  resp.body.comments.forEach(obj => {
+                    expect(obj).to.have.all.keys([
+                      'comment_id', 'votes', 'created_at', 'author', 'body']
+                    )
+                  })
+                })
+            })
+          });
 
           // **POST** `api/articles/:article_id/comments
           describe("#POST", () => {

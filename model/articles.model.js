@@ -46,7 +46,7 @@ const updateArticle = (articleID, { inc_votes, ...restOfObj }) => {
 
 const insertComment = (articleID, objComment) => {
   const article_id = parseInt(articleID)
-  console.log('in insertComment ' + article_id)
+
   return connection('comments')
     .insert({ author: objComment.username, article_id: article_id, body: objComment.body })
     .returning(['author', 'body', 'article_id', 'votes', 'created_at'])
@@ -55,4 +55,13 @@ const insertComment = (articleID, objComment) => {
     })
 }
 
-module.exports = { fetchArticle, updateArticle, insertComment }
+const fetchComments = (articleID) => {
+  return connection('comments')
+    .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
+    .where('article_id', parseInt(articleID))
+    .then(arrResult => {
+      console.log(arrResult)
+      return arrResult;
+    })
+}
+module.exports = { fetchArticle, updateArticle, insertComment, fetchComments }
