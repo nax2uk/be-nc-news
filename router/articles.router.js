@@ -4,6 +4,7 @@ const { getArticles, getArticleById, patchArticle, postComment, getComments, err
 routerArticles
   .route('/')
   .get(getArticles)
+  .all(errStatus405)
 routerArticles
   .route('/:articleID')
   .get(getArticleById)

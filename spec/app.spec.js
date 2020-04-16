@@ -120,6 +120,24 @@ describe("#app", () => {
       // **GET** `api/articles`
       describe("#GET", () => {
 
+        // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
+        describe("#POST #PUT, #DELETE, #PATCH", () => {
+          it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+            const invalidMethods = ["put", "delete", "post", "patch"];
+            const requests = invalidMethods.map((httpRequestMethod) => {
+              return request(app)
+              [httpRequestMethod]("/api/articles")
+                .expect(405)
+                .then((resp) => {
+                  expect(resp.body.msg).to.equal(
+                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/articles`
+                  );
+                });
+            });
+            return Promise.all(requests);
+          });
+        });
+
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
           return request(app)
