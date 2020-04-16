@@ -526,10 +526,21 @@ describe("#app", () => {
       });
     });
 
-    describe("#/comments", () => {
+    describe.only("#/comments", () => {
       describe("#/:comment_id", () => {
-        // **PATCH** `/api/comments/:comment_id`
-        describe("#PATCH", () => { });
+        // **PATCH** `/api/comments/:comment_id` - status 200
+        describe("#PATCH", () => {
+          it('status:200, ', () => {
+            return request(app)
+              .patch('/api/comments/14')
+              .send({ inc_votes: -5 })
+              .expect(200)
+              .then(resp => {
+                expect(resp.body.comment).to.have.all.keys(['comment_id', 'author', 'article_id', 'votes', 'created_at', 'body'])
+                expect(resp.body.comment.votes).to.be.equal(11)
+              })
+          })
+        });
         // **DELETE** `/api/comments/:comment_id`
         describe("#DELETE", () => { });
       });
