@@ -55,11 +55,11 @@ const insertComment = (articleID, objComment) => {
     })
 }
 
-const fetchComments = (articleID) => {
+const fetchComments = (articleID, { sort_by, order }) => {
   return connection('comments')
     .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
     .where('article_id', articleID)
-    .orderBy('created_at')
+    .orderBy(sort_by || 'created_at', order || 'asc')
     .then(arrResult => {
       console.log(arrResult)
       return arrResult;

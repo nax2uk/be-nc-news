@@ -25,7 +25,8 @@ const postComment = (req, resp, next) => {
 }
 
 const getComments = (req, resp, next) => {
-  fetchComments(req.params.articleID)
+  console.log(req.query)
+  fetchComments(req.params.articleID, req.query)
     .then(arrOfObjComments => {
       console.log(arrOfObjComments);
       resp.status(200).send({ comments: arrOfObjComments });

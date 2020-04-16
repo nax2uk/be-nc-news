@@ -1,6 +1,6 @@
 process.env.NODE_ENV = "test";
 const chai = require("chai");
-const {expect} = chai;
+const { expect } = chai;
 const request = require("supertest");
 const app = require("../app");
 const connection = require("../db/connection");
@@ -277,8 +277,11 @@ describe("#app", () => {
         });
 
         describe("#/comments", () => {
-          // **GET** `api/articles/:article_id/comments 
+
+          // **GET** `api/articles/:article_id/comments
           describe("#GET", () => {
+
+            // **GET** `api/articles/:article_id/comments -status 200
             it('status:200, responds with an array of comment objects', () => {
               return request(app)
                 .get('/api/articles/9/comments')
@@ -292,17 +295,39 @@ describe("#app", () => {
                   })
                 })
             })
-            // **GET** `api/articles/:article_id/comments 
+
+            // **GET** `api/articles/:article_id/comments - status 200
             it('status:200, result is sorted by created_at by default', () => {
               return request(app)
                 .get('/api/articles/9/comments')
                 .expect(200)
                 .then(resp => {
-                 expect(resp.body.comments).to.be.ascendingBy('created_at');
-                  })
+                  expect(resp.body.comments).to.be.ascendingBy('created_at');
                 })
-          
+            })
+
+            // **GET** `api/articles/:article_id/comments - status 200
+            it('status:200, result is ordered by ascending (default) when passed a sort_by query', () => {
+              return request(app)
+                .get('/api/articles/9/comments?sort_by=comment_id')
+                .expect(200)
+                .then(resp => {
+                  expect(resp.body.comments).to.be.ascendingBy('comment_id');
+                })
+            })
+
+            // **GET** `api/articles/:article_id/comments - status 200
+            it('status:200, result is ordered by order when passed a sort_by query', () => {
+              return request(app)
+                .get('/api/articles/9/comments?sort_by=comment_id&&order=desc')
+                .expect(200)
+                .then(resp => {
+                  expect(resp.body.comments).to.be.descendingBy('comment_id');
+                })
+            })
+
           });
+
 
           // **POST** `api/articles/:article_id/comments
           describe("#POST", () => {
