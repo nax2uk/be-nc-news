@@ -9,12 +9,9 @@ const patchComment = (req, resp, next) => {
 }
 
 const deleteComment = (req, resp, next) => {
-  console.log('in deleteComment');
+
   removeComment(req.params.commentID).then(() => {
     resp.status(204).send({});
-  }).catch(err => {
-    console.log(err);
-    next(err);
-  });
+  }).catch(next);
 }
 module.exports = { patchComment, deleteComment };

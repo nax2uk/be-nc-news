@@ -33,7 +33,7 @@ describe("#app", () => {
 
       // ERROR `/api/topics `: 405 for **POST**, **PATCH**, **PUT** and **DELETE**
       describe("#POST #PUT, #DELETE #PATCH", () => {
-        it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+        it("status:405, responds appropriately because the HTTP method is not allowed", () => {
           const invalidMethods = ["put", "delete", "patch", "post"];
           const requests = invalidMethods.map((httpRequestMethod) => {
             return request(app)
@@ -52,7 +52,7 @@ describe("#app", () => {
       // **GET** `/api/topics`
       describe("#GET", () => {
         // **GET** `/api/topics`- status 200: 
-        it("status: 200, responds with an array of topic objects", () => {
+        it("status:200, responds with an array of topic objects", () => {
           return request(app)
             .get("/api/topics")
             .expect(200)
@@ -68,9 +68,9 @@ describe("#app", () => {
 
     describe("#/users", () => {
       describe("#/:username", () => {
-        // ERROR: 405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/users/:username
+        // ERROR:405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/users/:username
         describe("#POST #PUT, #DELETE #PATCH", () => {
-          it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+          it("status:405, responds appropriately because the HTTP method is not allowed", () => {
             const invalidMethods = ["put", "delete", "patch", "post"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
@@ -90,7 +90,7 @@ describe("#app", () => {
         describe("#GET", () => {
 
           // **GET** `api/users/:username`- status 200
-          it("status: 200, responds with an array of user objects", () => {
+          it("status:200, responds with an array of user objects", () => {
             return request(app)
               .get("/api/users/icellusedkars")
               .expect(200)
@@ -104,7 +104,7 @@ describe("#app", () => {
           });
 
           // ERROR: **GET** `api/users/:username`- status 404
-          it('status: 404 - username does not exist', () => {
+          it('status:404, username does not exist', () => {
             return request(app)
               .get('/api/users/oiomjijoaerhoahro')
               .expect(404)
@@ -122,7 +122,7 @@ describe("#app", () => {
 
         // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
         describe("#POST #PUT, #DELETE, #PATCH", () => {
-          it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+          it("status:405, responds appropriately because the HTTP method is not allowed", () => {
             const invalidMethods = ["put", "delete", "post", "patch"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
@@ -249,7 +249,7 @@ describe("#app", () => {
 
         // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
         describe("#POST #PUT, #DELETE", () => {
-          it("status: 405, responds appropriately because the HTTP method is not allowed", () => {
+          it("status:405, responds appropriately because the HTTP method is not allowed", () => {
             const invalidMethods = ["put", "delete", "post"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
@@ -335,7 +335,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 404
-          it('status: 404, article_id does not exist', () => {
+          it('status:404, article_id does not exist', () => {
             return request(app)
               .patch('/api/articles/909090')
               .send({ inc_votes: -1 })
@@ -346,7 +346,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 400, article_id is an invalid type', () => {
+          it('status:400, article_id is an invalid type', () => {
             return request(app)
               .patch('/api/articles/aiojijojeofnuninfe')
               .send({ inc_votes: -1 })
@@ -357,7 +357,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 400, article_id out of range for type integer', () => {
+          it('status:400, article_id out of range for type integer', () => {
             return request(app)
               .patch('/api/articles/99999999999')
               .send({ inc_votes: -1 })
@@ -368,7 +368,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 400, no key inc_votes in request body', () => {
+          it('status:400, no key inc_votes in request body', () => {
             return request(app)
               .patch('/api/articles/aiojijojeofnuninfe')
               .send({ votes: 4 })
@@ -379,7 +379,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 400, invalid inc_votes', () => {
+          it('status:400, invalid inc_votes', () => {
             return request(app)
               .patch('/api/articles/3')
               .send({ inc_votes: 'cat' })
@@ -390,7 +390,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/articles/:article_id - status 400
-          it('status: 400, invalid body', () => {
+          it('status:400, invalid body', () => {
             return request(app)
               .patch('/api/articles/3')
               .send({ inc_votes: 1, name: 'Mitch' })
@@ -402,6 +402,24 @@ describe("#app", () => {
         });
 
         describe("#/comments", () => {
+
+          // ERROR:405 for **PATCH**, **PUT** and **DELETE**  /api/articles/:article_id/comments
+          describe("#PATCH #PUT, #DELETE", () => {
+            it("status:405, responds appropriately because the HTTP method is not allowed", () => {
+              const invalidMethods = ["patch", "put", "delete"];
+              const requests = invalidMethods.map((httpRequestMethod) => {
+                return request(app)
+                [httpRequestMethod]("/api/articles/5/comments")
+                  .expect(405)
+                  .then((resp) => {
+                    expect(resp.body.msg).to.equal(
+                      `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/articles/5/comments`
+                    );
+                  });
+              });
+              return Promise.all(requests);
+            });
+          });
 
           // **GET** `api/articles/:article_id/comments
           describe("#GET", () => {
@@ -477,7 +495,7 @@ describe("#app", () => {
           describe("#POST", () => {
 
             // **POST** `api/articles/:article_id/comments - status 201
-            it('status: 201, created comments successfully', () => {
+            it('status:201, created comments successfully', () => {
               return request(app)
                 .post('/api/articles/2/comments')
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
@@ -488,7 +506,7 @@ describe("#app", () => {
             })
 
             // ERROR: **POST** `api/articles/:article_id/comments - status 404
-            it('status: 404, article_id does not exist', () => {
+            it('status:404, article_id does not exist', () => {
               return request(app)
                 .post('/api/articles/9999/comments')
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
@@ -499,7 +517,7 @@ describe("#app", () => {
             })
 
             // ERROR: **POST** `api/articles/:article_id/comments - status 400
-            it('status: 400, article_id out of range for type integer', () => {
+            it('status:400, article_id out of range for type integer', () => {
               return request(app)
                 .post('/api/articles/99999999999/comments')
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
@@ -511,7 +529,7 @@ describe("#app", () => {
 
 
             // ERROR: **POST** `api/articles/:article_id/comments - status 400
-            it('status: 400, invalid type for article_id', () => {
+            it('status:400, invalid type for article_id', () => {
               return request(app)
                 .post('/api/articles/okpkk/comments')
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
@@ -528,6 +546,25 @@ describe("#app", () => {
 
     describe("#/comments", () => {
       describe("#/:comment_id", () => {
+
+        // ERROR:405 for **POST**, **PUT** and **GET**  /api/comments/:comment_id
+        describe("#POST #PUT, #GET", () => {
+          it("status:405, responds appropriately because the HTTP method is not allowed", () => {
+            const invalidMethods = ["put", "get", "post"];
+            const requests = invalidMethods.map((httpRequestMethod) => {
+              return request(app)
+              [httpRequestMethod]("/api/comments/5")
+                .expect(405)
+                .then((resp) => {
+                  expect(resp.body.msg).to.equal(
+                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/comments/5`
+                  );
+                });
+            });
+            return Promise.all(requests);
+          });
+        });
+
         // **PATCH** `/api/comments/:comment_id` - status 200
         describe("#PATCH", () => {
           it('status:200, ', () => {
@@ -564,7 +601,7 @@ describe("#app", () => {
           })
 
           // ERROR: **PATCH** `api/comments/:comment_id - status 400
-          it('status: 400, comment_id out of range for type integer', () => {
+          it('status:400, comment_id out of range for type integer', () => {
             return request(app)
               .patch('/api/comments/99999999999')
               .send({ inc_votes: -1 })

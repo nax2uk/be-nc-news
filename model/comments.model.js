@@ -24,7 +24,7 @@ const removeComment = (commentID) => {
     .then(arrResult => {
       if (arrResult.length === 0)
         return Promise.reject({ status: 404, msg: 'Resource Not Found: comment_id does not exist.' })
-      console.log(arrResult);
+
     })
 }
 module.exports = { updateComment, removeComment };
