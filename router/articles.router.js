@@ -1,10 +1,12 @@
 const routerArticles = require("express").Router();
-const { getArticle, patchArticle, postComment, getComments, errStatus405 } = require('../controller');
-
+const { getArticles, getArticleById, patchArticle, postComment, getComments, errStatus405 } = require('../controller');
 
 routerArticles
+  .route('/')
+  .get(getArticles)
+routerArticles
   .route('/:articleID')
-  .get(getArticle)
+  .get(getArticleById)
   .patch(patchArticle)
   .all(errStatus405);
 

@@ -5,11 +5,17 @@ const handlePsqlErrors = (err, req, resp, next) => {
       case '22003':
         resp.status(400).send({ msg: 'Bad Request: Invalid input type for article data' })
         break;
+      case '42703':
+        resp.status(400).send({ msg: 'Bad Request: query parameter does not exist.' });
+        break;
       case "23503":
         resp.status(404).send({
           msg:
             "Resource not found: article_id does not exist.",
         });
+        break;
+
+
       default:
     }
   } else next(err);

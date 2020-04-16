@@ -1,5 +1,5 @@
 const { fetchAllTopics } = require("./topics.model");
 const { fetchUser } = require("./users.model");
-const { fetchArticle, updateArticle, insertComment, fetchComments } = require('./articles.model')
+const { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments } = require('./articles.model')
 
-module.exports = { fetchAllTopics, fetchUser, fetchArticle, updateArticle, insertComment, fetchComments };
+module.exports = { fetchAllTopics, fetchUser, fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments };

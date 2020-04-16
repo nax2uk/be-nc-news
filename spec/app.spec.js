@@ -118,7 +118,66 @@ describe("#app", () => {
 
     describe("#/articles", () => {
       // **GET** `api/articles`
-      describe("#GET", () => { });
+      describe.only("#GET", () => {
+
+         // **GET** `api/articles` - status:200
+        it('status:200, responds with an array of articles with the correct properties', () => {
+          return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.an('array');
+              expect(resp.body.articles.length).to.equal(12)
+              resp.body.articles.forEach(obj => {
+                expect(obj).to.have.all.keys(['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count'])
+              })
+            })
+        })
+
+        // **GET** `api/articles` - status:200
+        it('status:200, responds with an array of articles default sorted by created_at ascending', () => {
+          return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(resp => {
+             expect(resp.body.articles).to.be.ascendingBy('created_at')
+            })
+        })
+
+        // **GET** `api/articles` - status:200
+        it('status:200, responds with an array of articles default sorted by query column passed and ascending', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.ascendingBy('article_id')
+            })
+        })
+
+        // **GET** `api/articles` - status:200
+        it('status:200, responds with an array of articles filtered by query author', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&&order=desc&&author=butter_bridge')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.descendingBy('article_id')
+              expect(resp.body.articles.length).to.equal(3)
+            })//rogersop
+        })
+
+        // **GET** `api/articles` - status:200
+        it('status:200, responds with an array of articles filtered by query author and topic', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&&order=desc&&author=rogersop&&topic=mitch')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.descendingBy('article_id')
+              expect(resp.body.articles.length).to.equal(2)
+            })//rogersop
+        })
+
+
+      });
 
       describe("/:article_id", () => {
 
@@ -326,6 +385,25 @@ describe("#app", () => {
                 })
             })
 
+            // **GET `api/articles/:article_id/comments - status 400
+            it('status:400, sort_by a column that does not exist', () => {
+              return request(app)
+                .get('/api/articles/9/comments?sort_by=username')
+                .expect(400)
+                .then(resp => {
+                  expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+                })
+            })
+
+            // **GET `api/articles/:article_id/comments - status 400
+            it('status:400, invalid syntax for order value', () => {
+              return request(app)
+                .get('/api/articles/9/comments?order=abc')
+                .expect(400)
+                .then(resp => {
+                  expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+                })
+            })
           });
 
 

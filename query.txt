@@ -1,57 +1,17 @@
 You are now connected to database "nc_news_test" as user "nax2uk".
- article_id |                         title                          | topic | comment_count 
-------------+--------------------------------------------------------+-------+---------------
-          4 | Student SUES Mitch!                                    | mitch |             0
-         10 | Seven inspirational thought leaders from Manchester UK | mitch |             0
-          6 | A                                                      | mitch |             1
-          2 | Sony Vaio; or, The Laptop                              | mitch |             0
-         11 | Am I a cat?                                            | mitch |             0
-          7 | Z                                                      | mitch |             0
-          9 | They're not exactly dogs, are they?                    | mitch |             2
-         12 | Moustache                                              | mitch |             0
-          3 | Eight pug gifs that remind me of mitch                 | mitch |             0
-          1 | Living in the shadow of a great man                    | mitch |            13
-          5 | UNCOVERED: catspiracy to bring down democracy          | cats  |             2
-          8 | Does Mitch predate civilisation?                       | mitch |             0
+ article_id | comment_count 
+------------+---------------
+          4 |             0
+         10 |             0
+          6 |             1
+          2 |             0
+         11 |             0
+          7 |             0
+          9 |             2
+         12 |             0
+          3 |             0
+          1 |            13
+          5 |             2
+          8 |             0
 (12 rows)
-
- comment_id | author | article_id | votes | created_at | body 
-------------+--------+------------+-------+------------+------
-(0 rows)
-
-                                                                                     body                                                                                      
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages
-(1 row)
-
-You are now connected to database "nax2uk" as user "nax2uk".
-You are now connected to database "nc_news_test" as user "nax2uk".
- article_id |                         title                          | topic | comment_count 
-------------+--------------------------------------------------------+-------+---------------
-          4 | Student SUES Mitch!                                    | mitch |             0
-         10 | Seven inspirational thought leaders from Manchester UK | mitch |             0
-          6 | A                                                      | mitch |             1
-          2 | Sony Vaio; or, The Laptop                              | mitch |             0
-         11 | Am I a cat?                                            | mitch |             0
-          7 | Z                                                      | mitch |             0
-          9 | They're not exactly dogs, are they?                    | mitch |             2
-         12 | Moustache                                              | mitch |             0
-          3 | Eight pug gifs that remind me of mitch                 | mitch |             0
-          1 | Living in the shadow of a great man                    | mitch |            13
-          5 | UNCOVERED: catspiracy to bring down democracy          | cats  |             2
-          8 | Does Mitch predate civilisation?                       | mitch |             0
-(12 rows)
-
- comment_id | author | article_id | votes | created_at | body 
-------------+--------+------------+-------+------------+------
-(0 rows)
-
-                                                                                     body                                                                                      
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages
-(1 row)
-
- comment_id | author | article_id | votes | created_at | body 
-------------+--------+------------+-------+------------+------
-(0 rows)
 

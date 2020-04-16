@@ -1,8 +1,14 @@
-const { fetchArticle, updateArticle, insertComment, fetchComments } = require('../model')
+const { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments } = require('../model')
 
-const getArticle = (req, resp, next) => {
+const getArticles = (req, resp, next) => {
+  fetchArticles(req.query).then(arrObjArticles => {
+    resp.status(200).send({ articles: arrObjArticles })
+  }).catch(next);
+}
 
-  fetchArticle(req.params.articleID).then(objArticle => {
+const getArticleById = (req, resp, next) => {
+
+  fetchArticleById(req.params.articleID).then(objArticle => {
     resp.status(200).send({ article: objArticle })
   }).catch(next)
 }
@@ -35,4 +41,4 @@ const getComments = (req, resp, next) => {
       next(err)
     });
 }
-module.exports = { getArticle, patchArticle, postComment, getComments };
+module.exports = { getArticles, getArticleById, patchArticle, postComment, getComments };

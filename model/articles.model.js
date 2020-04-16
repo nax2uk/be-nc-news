@@ -1,6 +1,25 @@
 const connection = require('../db/connection')
 
-const fetchArticle = (articleID) => {
+const fetchArticles = ({sort_by, order, author, topic}) => {
+
+  return connection('articles')
+    .select('articles.article_id','articles.author','articles.created_at','title','topic','articles.votes')
+    .count('comments.article_id as comment_count')
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .groupBy('articles.article_id')
+    .orderBy(sort_by || 'created_at', order || 'asc' )
+    .modify(authorQuery=>{
+      if (author) authorQuery.where('articles.author', author);
+    })
+    .modify(topicQuery=>{
+      if (topic) topicQuery.where({topic});
+    })
+    .then(result => {
+      return result;
+    })
+}
+
+const fetchArticleById = (articleID) => {
 
   return connection('articles')
     .select('articles.*')
@@ -36,7 +55,7 @@ const updateArticle = (articleID, { inc_votes, ...restOfObj }) => {
         }
       })
       .then(() => {
-        return fetchArticle(articleID);
+        return fetchArticleById(articleID);
       })
       .then(objArticle => {
         return objArticle;
@@ -56,12 +75,15 @@ const insertComment = (articleID, objComment) => {
 }
 
 const fetchComments = (articleID, { sort_by, order }) => {
+
   return connection('comments')
+    .orderBy([{ column: sort_by || 'created_at', order: order || 'asc' }]) //order || 'asc'
     .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
     .where('article_id', articleID)
-    .orderBy(sort_by || 'created_at', order || 'asc')
+   
     .then(arrResult => {
+      console.log(arrResult);
       return arrResult;
     })
 }
-module.exports = { fetchArticle, updateArticle, insertComment, fetchComments }
+module.exports = { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments }
