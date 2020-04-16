@@ -3,7 +3,10 @@ const { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComm
 const getArticles = (req, resp, next) => {
   fetchArticles(req.query).then(arrObjArticles => {
     resp.status(200).send({ articles: arrObjArticles })
-  }).catch(next);
+  }).catch(err => {
+    console.log(err);
+    next(err);
+  });
 }
 
 const getArticleById = (req, resp, next) => {

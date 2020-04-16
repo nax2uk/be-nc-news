@@ -1,22 +1,29 @@
 const connection = require('../db/connection')
 
-const fetchArticles = ({sort_by, order, author, topic}) => {
+const fetchArticles = ({ sort_by, order, author, topic }) => {
 
-  return connection('articles')
-    .select('articles.article_id','articles.author','articles.created_at','title','topic','articles.votes')
-    .count('comments.article_id as comment_count')
-    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-    .groupBy('articles.article_id')
-    .orderBy(sort_by || 'created_at', order || 'asc' )
-    .modify(authorQuery=>{
-      if (author) authorQuery.where('articles.author', author);
-    })
-    .modify(topicQuery=>{
-      if (topic) topicQuery.where({topic});
-    })
-    .then(result => {
-      return result;
-    })
+  if (order && !(order === 'asc' || order === 'desc')) {
+    return Promise.reject({ status: 400, msg: 'Bad Request: invalid value for key order in query' })
+  } else {
+    return connection('articles')
+      .select('articles.article_id', 'articles.author', 'articles.created_at', 'title', 'topic', 'articles.votes')
+      .count('comments.article_id as comment_count')
+      .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+      .groupBy('articles.article_id')
+      .orderBy(sort_by || 'created_at', order || 'asc')
+      .modify(authorQuery => {
+        if (author) authorQuery.where('articles.author', author);
+      })
+      .modify(topicQuery => {
+        if (topic) topicQuery.where({ topic });
+      })
+      .then(result => {
+        if (result.length == 0)
+          return Promise.reject({ status: 404, msg: 'Resource not found: topic or author query does not exist' })
+
+        return result;
+      })
+  }
 }
 
 const fetchArticleById = (articleID) => {
@@ -80,7 +87,7 @@ const fetchComments = (articleID, { sort_by, order }) => {
     .orderBy([{ column: sort_by || 'created_at', order: order || 'asc' }]) //order || 'asc'
     .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
     .where('article_id', articleID)
-   
+
     .then(arrResult => {
       console.log(arrResult);
       return arrResult;

@@ -120,7 +120,7 @@ describe("#app", () => {
       // **GET** `api/articles`
       describe.only("#GET", () => {
 
-         // **GET** `api/articles` - status:200
+        // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
           return request(app)
             .get('/api/articles')
@@ -140,7 +140,7 @@ describe("#app", () => {
             .get('/api/articles')
             .expect(200)
             .then(resp => {
-             expect(resp.body.articles).to.be.ascendingBy('created_at')
+              expect(resp.body.articles).to.be.ascendingBy('created_at')
             })
         })
 
@@ -176,7 +176,35 @@ describe("#app", () => {
             })//rogersop
         })
 
+        // **GET** `api/articles` - status:400
+        it('status:400, sort_by a column that does not exist', () => {
+          return request(app)
+            .get('/api/articles?sort_by=username')
+            .expect(400)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+            })
+        })
 
+        // **GET** `api/articles` - status:400
+        it('status:400, order!==asc or desc', () => {
+          return request(app)
+            .get('/api/articles?sort_by=author&&order=abc')
+            .expect(400)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Bad Request: invalid value for key order in query')
+            })
+        })
+
+        // **GET** `api/articles` - status:404
+        it('status:404, topic or author does not exist in db', () => {
+          return request(app)
+            .get('/api/articles?topic=bored&&author=azlina')
+            .expect(404)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Resource not found: topic or author query does not exist')
+            })
+        })
       });
 
       describe("/:article_id", () => {
