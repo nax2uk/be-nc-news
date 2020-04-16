@@ -608,8 +608,54 @@ describe("#app", () => {
           })
         });
       });
+
       // **DELETE** `/api/comments/:comment_id`
-      describe("#DELETE", () => { });
+      describe("#DELETE", () => {
+
+        // **DELETE** `/api/comments/:comment_id` - status 204
+        it('status:204, deletes comment obj with given comment_id', () => {
+          return request(app)
+            .delete('/api/comments/5')
+            .expect(204)
+            .then(() => {
+              return connection('comments').where({ comment_id: 5 })
+            })
+            .then((arrResult => {
+              expect(arrResult.length).to.equal(0);
+            }))
+        })
+
+        // ERROR: **DELETE** `/api/comments/:comment_id` - status 400
+        it('status:400, comment_id out of range for integer value', () => {
+          return request(app)
+            .delete('/api/comments/0009999992929')
+            .expect(400)
+            .then(resp => {
+              expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+            })
+        })
+
+
+        // ERROR: **DELETE** `/api/comments/:comment_id` - status 404
+        it('status:404, comment_id does not exist', () => {
+          return request(app)
+            .delete('/api/comments/999999')
+            .expect(404)
+            .then(resp => {
+              expect(resp.body.msg).to.equal('Resource Not Found: comment_id does not exist.')
+            })
+        })
+
+        // ERROR: **DELETE** `/api/comments/:comment_id` - status 400
+        it('status:400, comment_id invalid type', () => {
+          return request(app)
+            .delete('/api/comments/rainbow')
+            .expect(400)
+            .then(resp => {
+              expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
+            })
+        })
+      });
     });
   });
 });

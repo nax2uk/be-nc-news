@@ -16,4 +16,15 @@ const updateComment = (commentID, { inc_votes, ...restOfObj }) => {
   }
 }
 
-module.exports = { updateComment };
+const removeComment = (commentID) => {
+  return connection('comments')
+    .del()
+    .where('comment_id', parseInt(commentID))
+    .returning('*')
+    .then(arrResult => {
+      if (arrResult.length === 0)
+        return Promise.reject({ status: 404, msg: 'Resource Not Found: comment_id does not exist.' })
+      console.log(arrResult);
+    })
+}
+module.exports = { updateComment, removeComment };

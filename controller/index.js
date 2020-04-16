@@ -7,7 +7,7 @@ const { getAllTopics } = require("./topics.controller");
 const { getUser } = require("./users.controllers");
 const { getArticles, getArticleById, patchArticle, postComment, getComments } = require('./articles.controller')
 
-const { patchComment } = require('./comments.controller')
+const { patchComment, deleteComment } = require('./comments.controller')
 
 module.exports = {
   errInvalidPaths,
@@ -19,5 +19,6 @@ module.exports = {
   patchArticle,
   postComment,
   getComments,
-  patchComment
+  patchComment,
+  deleteComment
 };
