@@ -58,7 +58,8 @@ const insertComment = (articleID, objComment) => {
 const fetchComments = (articleID) => {
   return connection('comments')
     .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
-    .where('article_id', parseInt(articleID))
+    .where('article_id', articleID)
+    .orderBy('created_at')
     .then(arrResult => {
       console.log(arrResult)
       return arrResult;
