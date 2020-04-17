@@ -4,7 +4,10 @@ const testData = require("./test-data");
 
 const data = {
   development: devData,
+  production: devData,
   test: testData,
 };
 
 module.exports = data[ENV];
+//heroku:
+//const data = { test, development, production: development };
