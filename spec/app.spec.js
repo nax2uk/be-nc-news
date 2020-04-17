@@ -46,7 +46,7 @@ describe("#app", () => {
     });
 
     // **GET** `/api`-
-    describe.only("#GET", () => {
+    describe("#GET", () => {
       it('status:200, responds with a JSON describing all available endpoints', () => {
         return request(app)
           .get('/api')
@@ -186,7 +186,7 @@ describe("#app", () => {
       });
 
       // **GET** `api/articles`
-      describe("#GET", () => {
+      describe.only("#GET", () => {
 
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
@@ -212,7 +212,7 @@ describe("#app", () => {
             })
         })
 
-        // **GET** `api/articles` - status:200
+        // **GET** `api/articles` - status:200 with query sort_by
         it('status:200, responds with an array of articles default sorted by query column passed and descending', () => {
           return request(app)
             .get('/api/articles?sort_by=article_id')
@@ -222,18 +222,31 @@ describe("#app", () => {
             })
         })
 
-        // **GET** `api/articles` - status:200
+        // **GET** `api/articles` - status:200 with sort_by and order
+        it('status:200, responds with an array of articles sort_by=article_id&&order=desc', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&&order=asc')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.ascendingBy('article_id');
+              expect(resp.body.articles.length).to.equal(12);
+            })//rogersop
+        })
+
+        // **GET** `api/articles` - status:200 with query author
         it('status:200, responds with an array of articles filtered by query author', () => {
           return request(app)
             .get('/api/articles?sort_by=article_id&&order=desc&&author=butter_bridge')
             .expect(200)
             .then(resp => {
-              expect(resp.body.articles).to.be.descendingBy('article_id')
-              expect(resp.body.articles.length).to.equal(3)
+              expect(resp.body.articles).to.be.descendingBy('article_id');
+              expect(resp.body.articles.length).to.equal(3);
             })//rogersop
         })
 
-        // **GET** `api/articles` - status:200
+
+
+        // **GET** `api/articles` - status:200 with query topic
         it('status:200, responds with an array of articles filtered by query author and topic', () => {
           return request(app)
             .get('/api/articles?sort_by=article_id&&order=desc&&author=rogersop&&topic=mitch')
@@ -241,13 +254,34 @@ describe("#app", () => {
             .then(resp => {
               expect(resp.body.articles).to.be.descendingBy('article_id')
               expect(resp.body.articles.length).to.equal(2)
-            })//rogersop
+            })
+        })
+
+        // **GET** `api/articles` - status:200 with query limit
+        it('status:200, responds with an array of articles with query limit', () => {
+          return request(app)
+            .get('/api/articles?limit=5')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles).to.be.descendingBy('created_at')
+              expect(resp.body.articles.length).to.equal(5)
+            })
         })
 
         // **GET** `api/articles` - status:400
         it('status:400, sort_by a column that does not exist', () => {
           return request(app)
             .get('/api/articles?sort_by=username')
+            .expect(400)
+            .then(resp => {
+              expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
+            })
+        })
+
+        // **GET** `api/articles` - status:400
+        it('status:400, invalid query body', () => {
+          return request(app)
+            .get('/api/articles?happy=yes')
             .expect(400)
             .then(resp => {
               expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
