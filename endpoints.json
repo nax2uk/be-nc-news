@@ -35,7 +35,8 @@
       "author",
       "topic",
       "sort_by",
-      "order"
+      "order",
+      "limit"
     ],
     "request.body": {},
     "exampleResponse": {
