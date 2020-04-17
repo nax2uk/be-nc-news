@@ -1,6 +1,6 @@
 const connection = require('../db/connection')
 
-const fetchArticles = ({ sort_by, order, author, topic, limit, ...restOfObj }) => {
+const fetchArticles = ({ sort_by, order, author, topic, limit, p, ...restOfObj }) => {
 
   if ((order && !(order === 'asc' || order === 'desc')) || Object.keys(restOfObj).length > 0) {
     return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
@@ -11,14 +11,13 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, ...restOfObj }) =
       .leftJoin('comments', 'comments.article_id', 'articles.article_id')
       .groupBy('articles.article_id')
       .orderBy(sort_by || 'created_at', order || 'desc')
+      .limit(limit || 10)
+      .offset((p - 1) * limit || 0)
       .modify(authorQuery => {
         if (author) authorQuery.where('articles.author', author);
       })
       .modify(topicQuery => {
         if (topic) topicQuery.where({ topic });
-      })
-      .modify(limitQuery => {
-        if (limit) limitQuery.limit(limit);
       })
       .then(result => {
         if (result.length == 0) {

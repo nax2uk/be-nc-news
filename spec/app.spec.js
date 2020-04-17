@@ -191,7 +191,7 @@ describe("#app", () => {
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
           return request(app)
-            .get('/api/articles')
+            .get('/api/articles?limit=20')
             .expect(200)
             .then(resp => {
               expect(resp.body.articles).to.be.an('array');
@@ -225,7 +225,7 @@ describe("#app", () => {
         // **GET** `api/articles` - status:200 with sort_by and order
         it('status:200, responds with an array of articles sort_by=article_id&&order=desc', () => {
           return request(app)
-            .get('/api/articles?sort_by=article_id&&order=asc')
+            .get('/api/articles?sort_by=article_id&&order=asc&&limit=20')
             .expect(200)
             .then(resp => {
               expect(resp.body.articles).to.be.ascendingBy('article_id');
@@ -265,6 +265,16 @@ describe("#app", () => {
             .then(resp => {
               expect(resp.body.articles).to.be.descendingBy('created_at')
               expect(resp.body.articles.length).to.equal(5)
+            })
+        })
+
+        // **GET** `api/articles` - status:200 with query limit and page number p
+        it('status:200, responds with an array of articles with query limit', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&&order=asc&&limit=4&&p=2')
+            .expect(200)
+            .then(resp => {
+              expect(resp.body.articles[0].article_id).to.equal(5);
             })
         })
 
