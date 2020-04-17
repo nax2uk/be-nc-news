@@ -1,8 +1,13 @@
 const connection = require('../db/connection')
 
-const fetchArticles = ({ sort_by, order, author, topic, limit, p, ...restOfObj }) => {
+const fetchArticles = ({ sort_by = 'created_at', order = 'desc', author, topic, limit = 10, p = 1, ...restOfQueries }) => {
 
-  if ((order && !(order === 'asc' || order === 'desc')) || Object.keys(restOfObj).length > 0) {
+  const limitNotValid = limit < 0 || isNaN(limit);
+  const pNotValid = p < 0 || isNaN(p);
+  const orderNotValid = !(order === 'asc' || order === 'desc');
+  const queryNotValid = Object.keys(restOfQueries).length > 0;
+
+  if (pNotValid || limitNotValid || orderNotValid || queryNotValid) {
     return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
   } else {
     return connection('articles')
@@ -10,9 +15,9 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p, ...restOfObj }
       .count('comments.article_id as comment_count')
       .leftJoin('comments', 'comments.article_id', 'articles.article_id')
       .groupBy('articles.article_id')
-      .orderBy(sort_by || 'created_at', order || 'desc')
-      .limit(limit || 10)
-      .offset((p - 1) * limit || 0)
+      .orderBy(sort_by, order)
+      .limit(limit)
+      .offset((p - 1) * limit)
       .modify(authorQuery => {
         if (author) authorQuery.where('articles.author', author);
       })

@@ -334,8 +334,20 @@ describe("#app", () => {
             .get('/api/articles?topic=paper')
             .expect(404)
             .then(resp => {
+
               expect(resp.body.msg).to.equals('Resource not found: cannot display results for query')
             })//
+        })
+
+        // **GET** `api/articles` - status:400 limit not an integer
+        it('status:400, query limit is not an integer', () => {
+          return request(app)
+            .get('/api/articles?limit=nn')
+            .expect(400)
+            .then(resp => {
+              console.log(resp.body.articles)
+              expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
+            })
         })
       });
       // `/api/articles/:article_id`
