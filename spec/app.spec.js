@@ -12,6 +12,7 @@ after(() => connection.destroy());
 
 describe("#app", () => {
   describe("#/api", () => {
+
     // ERROR : 404 for invalid paths
     describe("#handle error for invalid paths", () => {
       it("status:404, gives error when invalid path given by user", () => {
@@ -26,9 +27,52 @@ describe("#app", () => {
       });
     });
 
-    // **GET** `/api`-
-    describe("#GET", () => { });
+    // ERROR `/api `: 405 for **POST**, **PATCH**, **PUT** and **DELETE**
+    describe("#POST #PUT, #DELETE, #PATCH", () => {
+      it("status:405, responds appropriately because the HTTP method is not allowed", () => {
+        const invalidMethods = ["put", "delete", "patch", "post"];
+        const requests = invalidMethods.map((httpRequestMethod) => {
+          return request(app)
+          [httpRequestMethod]("/api")
+            .expect(405)
+            .then((resp) => {
+              expect(resp.body.msg).to.equal(
+                `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api`
+              );
+            });
+        });
+        return Promise.all(requests);
+      });
+    });
 
+    // **GET** `/api`-
+    describe.only("#GET", () => {
+      it('status:200, responds with a JSON describing all available endpoints', () => {
+        return request(app)
+          .get('/api')
+          .expect(200)
+          .then(resp => {
+            expect(resp.body.api).to.have.all.keys([
+              "GET /api",
+              "GET /api/topics",
+              "GET /api/users/:username",
+              "GET /api/articles",
+              "GET /api/articles/:article_id",
+              "PATCH /api/articles/:article_id",
+              "GET /api/articles/:article_id/comments",
+              "POST /api/articles/:article_id/comments",
+              "PATCH /api/comments/:comment_id",
+              "DELETE /api/comments/:comment_id"]);
+          })
+      })
+    });
+
+
+
+
+
+
+    // `/api/topics`
     describe("#/topics", () => {
 
       // ERROR `/api/topics `: 405 for **POST**, **PATCH**, **PUT** and **DELETE**
@@ -67,18 +111,21 @@ describe("#app", () => {
     });
 
     describe("#/users", () => {
+
+      // `/api/username/:username
       describe("#/:username", () => {
-        // ERROR:405 for **POST**, **PATCH**, **PUT** and **DELETE**  /api/users/:username
-        describe("#POST #PUT, #DELETE #PATCH", () => {
+
+        // ERROR: 405 for **POST**, **PUT**, **PATCH** and **DELETE**  /api/users/:username
+        describe("#POST #PUT, #DELETE, #PATCH", () => {
           it("status:405, responds appropriately because the HTTP method is not allowed", () => {
-            const invalidMethods = ["put", "delete", "patch", "post"];
+            const invalidMethods = ["put", "delete", "post", "patch"];
             const requests = invalidMethods.map((httpRequestMethod) => {
               return request(app)
-              [httpRequestMethod]("/api/users/icellusedkars")
+              [httpRequestMethod]("/api/users/1")
                 .expect(405)
                 .then((resp) => {
                   expect(resp.body.msg).to.equal(
-                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/users/icellusedkars`
+                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/users/1`
                   );
                 });
             });
@@ -86,7 +133,7 @@ describe("#app", () => {
           });
         });
 
-        // **GET** `api/users/:username`
+        // `api/users/:username`
         describe("#GET", () => {
 
           // **GET** `api/users/:username`- status 200
@@ -116,27 +163,30 @@ describe("#app", () => {
       });
     });
 
+
+    // `api/articles`
     describe("#/articles", () => {
+
+      // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
+      describe("#POST #PUT, #DELETE, #PATCH", () => {
+        it("status:405, responds appropriately because the HTTP method is not allowed", () => {
+          const invalidMethods = ["put", "delete", "post", "patch"];
+          const requests = invalidMethods.map((httpRequestMethod) => {
+            return request(app)
+            [httpRequestMethod]("/api/articles")
+              .expect(405)
+              .then((resp) => {
+                expect(resp.body.msg).to.equal(
+                  `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/articles`
+                );
+              });
+          });
+          return Promise.all(requests);
+        });
+      });
+
       // **GET** `api/articles`
       describe("#GET", () => {
-
-        // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
-        describe("#POST #PUT, #DELETE, #PATCH", () => {
-          it("status:405, responds appropriately because the HTTP method is not allowed", () => {
-            const invalidMethods = ["put", "delete", "post", "patch"];
-            const requests = invalidMethods.map((httpRequestMethod) => {
-              return request(app)
-              [httpRequestMethod]("/api/articles")
-                .expect(405)
-                .then((resp) => {
-                  expect(resp.body.msg).to.equal(
-                    `Method Not Allowed: for HTTP ${httpRequestMethod.toUpperCase()} at /api/articles`
-                  );
-                });
-            });
-            return Promise.all(requests);
-          });
-        });
 
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
@@ -153,22 +203,22 @@ describe("#app", () => {
         })
 
         // **GET** `api/articles` - status:200
-        it('status:200, responds with an array of articles default sorted by created_at ascending', () => {
+        it('status:200, responds with an array of articles default sorted by created_at descending', () => {
           return request(app)
             .get('/api/articles')
             .expect(200)
             .then(resp => {
-              expect(resp.body.articles).to.be.ascendingBy('created_at')
+              expect(resp.body.articles).to.be.descendingBy('created_at')
             })
         })
 
         // **GET** `api/articles` - status:200
-        it('status:200, responds with an array of articles default sorted by query column passed and ascending', () => {
+        it('status:200, responds with an array of articles default sorted by query column passed and descending', () => {
           return request(app)
             .get('/api/articles?sort_by=article_id')
             .expect(200)
             .then(resp => {
-              expect(resp.body.articles).to.be.ascendingBy('article_id')
+              expect(resp.body.articles).to.be.descendingBy('article_id')
             })
         })
 
@@ -200,7 +250,7 @@ describe("#app", () => {
             .get('/api/articles?sort_by=username')
             .expect(400)
             .then(resp => {
-              expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+              expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
             })
         })
 
@@ -210,7 +260,7 @@ describe("#app", () => {
             .get('/api/articles?sort_by=author&&order=abc')
             .expect(400)
             .then(resp => {
-              expect(resp.body.msg).to.equals('Bad Request: invalid value for key order in query')
+              expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
             })
         })
 
@@ -244,7 +294,7 @@ describe("#app", () => {
             })//
         })
       });
-
+      // `/api/articles/:article_id`
       describe("/:article_id", () => {
 
         // ERROR: 405 for **POST**, **PUT** and **DELETE**  /api/articles/:article_id
@@ -319,7 +369,6 @@ describe("#app", () => {
               .send({ inc_votes: -1 })
               .expect(200)
               .then(resp => {
-
                 expect(resp.body.article).to.have.all.keys([
                   "author",
                   "title",
@@ -374,7 +423,7 @@ describe("#app", () => {
               .send({ votes: 4 })
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input data for updating votes.')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
 
@@ -396,7 +445,7 @@ describe("#app", () => {
               .send({ inc_votes: 1, name: 'Mitch' })
               .expect(400)
               .then(resp => {
-                expect(resp.body.msg).to.equal('Bad Request: Invalid input data for updating votes.')
+                expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
               })
           })
         });
@@ -445,17 +494,17 @@ describe("#app", () => {
                 .get('/api/articles/9/comments')
                 .expect(200)
                 .then(resp => {
-                  expect(resp.body.comments).to.be.ascendingBy('created_at');
+                  expect(resp.body.comments).to.be.descendingBy('created_at');
                 })
             })
 
             // **GET** `api/articles/:article_id/comments - status 200
-            it('status:200, result is ordered by ascending (default) when passed a sort_by query', () => {
+            it('status:200, result is ordered by descending (default) when passed a sort_by query', () => {
               return request(app)
                 .get('/api/articles/9/comments?sort_by=comment_id')
                 .expect(200)
                 .then(resp => {
-                  expect(resp.body.comments).to.be.ascendingBy('comment_id');
+                  expect(resp.body.comments).to.be.descendingBy('comment_id');
                 })
             })
 
@@ -469,23 +518,33 @@ describe("#app", () => {
                 })
             })
 
-            // **GET `api/articles/:article_id/comments - status 400
+            // ERROR: **GET `api/articles/:article_id/comments - status 400
             it('status:400, sort_by a column that does not exist', () => {
               return request(app)
                 .get('/api/articles/9/comments?sort_by=username')
                 .expect(400)
                 .then(resp => {
-                  expect(resp.body.msg).to.equals('Bad Request: query parameter does not exist.')
+                  expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
                 })
             })
 
-            // **GET `api/articles/:article_id/comments - status 400
+            // ERROR: **GET `api/articles/:article_id/comments - status 400
             it('status:400, order!==asc or desc', () => {
               return request(app)
                 .get('/api/articles/9/comments?order=abc')
                 .expect(400)
                 .then(resp => {
-                  expect(resp.body.msg).to.equals('Bad Request: invalid value for key order in query')
+                  expect(resp.body.msg).to.equals('Bad Request: Invalid input data.')
+                })
+            })
+
+            // ERROR: **GET** `api/articles/:article_id/comments -status 404
+            it('status:404, valid article_id but does not exist in db', () => {
+              return request(app)
+                .get('/api/articles/1000/comments')
+                .expect(404)
+                .then(resp => {
+                  expect(resp.body.msg).to.equal('Resource Not Found: article_id does not exist.')
                 })
             })
           });
@@ -501,7 +560,18 @@ describe("#app", () => {
                 .send({ username: 'rogersop', body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
                 .expect(201)
                 .then(resp => {
-                  expect(resp.body.comment).to.have.all.keys(['author', 'body', 'article_id', 'votes', 'created_at']);
+                  expect(resp.body.comment).to.have.all.keys(['author', 'body', 'comment_id', 'votes', 'created_at']);
+                })
+            })//'comment_id', 'author', 'body', 'votes', and 'created_at'
+
+            // ERROR: **POST** `api/articles/:article_id/comments - status 400
+            it('status:400, username missing', () => {
+              return request(app)
+                .post('/api/articles/9999/comments')
+                .send({ body: 'I love Sony Vaio. Mine is still working, and wonder why they have discontinued them =(' })
+                .expect(400)
+                .then(resp => {
+                  expect(resp.body.msg).to.equal('Bad Request: Invalid input data.')
                 })
             })
 

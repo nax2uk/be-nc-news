@@ -3,10 +3,8 @@ const handlePsqlErrors = (err, req, resp, next) => {
     switch (err.code) {
       case '22P02':
       case '22003':
-        resp.status(400).send({ msg: 'Bad Request: Invalid input data.' })
-        break;
       case '42703':
-        resp.status(400).send({ msg: 'Bad Request: query parameter does not exist.' });
+        resp.status(400).send({ msg: 'Bad Request: Invalid input data.' });
         break;
       case "23503":
         resp.status(404).send({

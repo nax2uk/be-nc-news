@@ -3,14 +3,14 @@ const connection = require('../db/connection')
 const fetchArticles = ({ sort_by, order, author, topic }) => {
 
   if (order && !(order === 'asc' || order === 'desc')) {
-    return Promise.reject({ status: 400, msg: 'Bad Request: invalid value for key order in query' })
+    return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
   } else {
     return connection('articles')
       .select('articles.article_id', 'articles.author', 'articles.created_at', 'title', 'topic', 'articles.votes')
       .count('comments.article_id as comment_count')
       .leftJoin('comments', 'comments.article_id', 'articles.article_id')
       .groupBy('articles.article_id')
-      .orderBy(sort_by || 'created_at', order || 'asc')
+      .orderBy(sort_by || 'created_at', order || 'desc')
       .modify(authorQuery => {
         if (author) authorQuery.where('articles.author', author);
       })
@@ -44,7 +44,7 @@ const fetchArticleById = (articleID) => {
 const updateArticle = (articleID, { inc_votes, ...restOfObj }) => {
 
   if (inc_votes === undefined || Object.keys(restOfObj).length > 0) {
-    return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data for updating votes.' })
+    return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
   } else {
     const article_id = parseInt(articleID);
     return connection('articles')
@@ -70,27 +70,34 @@ const updateArticle = (articleID, { inc_votes, ...restOfObj }) => {
   }
 }
 
-const insertComment = (articleID, objComment) => {
+const insertComment = (articleID, { username, body, ...restOfObj }) => {
   const article_id = parseInt(articleID)
 
-  return connection('comments')
-    .insert({ author: objComment.username, article_id: article_id, body: objComment.body })
-    .returning(['author', 'body', 'article_id', 'votes', 'created_at'])
-    .then(arrResult => {
-      return arrResult[0];
-    })
+  if (username === undefined || body === undefined || Object.keys(restOfObj).length > 0) {
+    return Promise.reject({ status: 400, msg: "Bad Request: Invalid input data." })
+  } else {
+    return connection('comments')
+      .insert({ author: username, article_id: article_id, body: body })
+      .returning(['author', 'body', 'comment_id', 'votes', 'created_at'])
+      .then(arrResult => {
+        return arrResult[0];
+      })
+  }
 }
 
 const fetchComments = (articleID, { sort_by, order }) => {
   if (order && !(order === 'asc' || order === 'desc')) {
-    return Promise.reject({ status: 400, msg: 'Bad Request: invalid value for key order in query' })
+    return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
   } else {
     return connection('comments')
-      .orderBy([{ column: sort_by || 'created_at', order: order || 'asc' }]) //order || 'asc'
+      .orderBy([{ column: sort_by || 'created_at', order: order || 'desc' }])
       .select(['comment_id', 'votes', 'created_at', 'author', 'body'])
       .where('article_id', articleID)
 
       .then(arrResult => {
+        if (arrResult.length === 0) {
+          return Promise.reject({ status: 404, msg: "Resource Not Found: article_id does not exist." })
+        }
         return arrResult;
       })
   }
