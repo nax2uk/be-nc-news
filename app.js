@@ -9,6 +9,10 @@ const {
   handleServerErrors,
 } = require("./error-handler");
 
+const cors = require('cors');
+
+app.use(cors())
+
 app.use(express.json());
 app.use("/api", routerApi);
 
