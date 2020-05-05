@@ -1,8 +1,8 @@
 const { fetchArticles, fetchArticleById, updateArticle, insertComment, fetchComments } = require('../model')
 
 const getArticles = (req, resp, next) => {
-  fetchArticles(req.query).then(arrObjArticles => {
-    resp.status(200).send({ articles: arrObjArticles })
+  fetchArticles(req.query).then(({ articles_count, articles }) => {
+    resp.status(200).send({ articles: articles, articles_count: articles_count });
   }).catch(next);
 }
 

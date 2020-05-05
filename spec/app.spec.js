@@ -260,11 +260,12 @@ describe("#app", () => {
         // **GET** `api/articles` - status:200 with query limit
         it('status:200, responds with an array of articles with query limit', () => {
           return request(app)
-            .get('/api/articles?limit=5')
+            .get('/api/articles?topic=mitch&limit=5')
             .expect(200)
             .then(resp => {
-              expect(resp.body.articles).to.be.descendingBy('created_at')
-              expect(resp.body.articles.length).to.equal(5)
+              expect(resp.body.articles).to.be.descendingBy('created_at');
+              expect(resp.body.articles.length).to.equal(5);
+              expect(resp.body.articles_count).to.equal(11);
             })
         })
 
@@ -275,6 +276,7 @@ describe("#app", () => {
             .expect(200)
             .then(resp => {
               expect(resp.body.articles[0].article_id).to.equal(5);
+              expect(resp.body.articles_count).to.equal(12);
             })
         })
 

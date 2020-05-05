@@ -10,25 +10,37 @@ const fetchArticles = ({ sort_by = 'created_at', order = 'desc', author, topic, 
   if (pNotValid || limitNotValid || orderNotValid || queryNotValid) {
     return Promise.reject({ status: 400, msg: 'Bad Request: Invalid input data.' })
   } else {
-    return connection('articles')
-      .select('articles.article_id', 'articles.author', 'articles.created_at', 'title', 'topic', 'articles.votes')
-      .count('comments.article_id as comment_count')
-      .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-      .groupBy('articles.article_id')
-      .orderBy(sort_by, order)
-      .limit(limit)
-      .offset((p - 1) * limit)
-      .modify(authorQuery => {
-        if (author) authorQuery.where('articles.author', author);
-      })
-      .modify(topicQuery => {
-        if (topic) topicQuery.where({ topic });
-      })
-      .then(result => {
+    return Promise.all([
+      connection('articles')
+        .count('* as count')
+        .modify(authorQuery => {
+          if (author) authorQuery.where('articles.author', author);
+        })
+        .modify(topicQuery => {
+          if (topic) topicQuery.where({ topic });
+        }).first(),
+      connection('articles')
+        .select('articles.article_id', 'articles.author', 'articles.created_at', 'title', 'topic', 'articles.votes')
+        .count('comments.article_id as comment_count')
+        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+        .groupBy('articles.article_id')
+        .orderBy(sort_by, order)
+        .limit(limit)
+        .offset((p - 1) * limit)
+        .modify(authorQuery => {
+          if (author) authorQuery.where('articles.author', author);
+        })
+        .modify(topicQuery => {
+          if (topic) topicQuery.where({ topic });
+        })])
+      .then(([total, result]) => {
         if (result.length == 0) {
           return Promise.reject({ status: 404, msg: 'Resource not found: cannot display results for query' })
         }
-        return result;
+        console.log(result);
+        return {
+          articles: result, articles_count: parseInt(total.count)
+        }
       })
   }
 }
