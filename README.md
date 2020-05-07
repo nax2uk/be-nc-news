@@ -1,6 +1,11 @@
 # Northcoders News Server (API)
 
-This repository is a RESTful API server for which serves up data for the Northcoder News website. also built by me. (See Links)
+This repository is a RESTful API server which serves up data for the Northcoder News website, also built by me. (See Links)
+
+## Links
+- You can find the api hosted [here](https://nc--news-server.herokuapp.com/api)
+- You can find the front-end react app deployed [here](https://northcoders-news-website.netlify.app/)
+- You can find the front-end react repository [here](https://github.com/nax2uk/fe-nc-news.git)
 
 ## Getting Started
 
