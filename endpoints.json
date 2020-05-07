@@ -30,7 +30,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles and articles_count which is the total number of articles before limit and p is queried",
     "queries": [
       "author",
       "topic",
@@ -51,7 +51,8 @@
           "votes": 100,
           "comment_count": "13"
         }
-      ]
+      ],
+      "articles_count": 22
     }
   },
   "GET /api/articles/:article_id": {
