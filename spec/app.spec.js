@@ -186,7 +186,7 @@ describe("#app", () => {
       });
 
       // **GET** `api/articles`
-      describe.only("#GET", () => {
+      describe("#GET", () => {
 
         // **GET** `api/articles` - status:200
         it('status:200, responds with an array of articles with the correct properties', () => {
@@ -392,7 +392,7 @@ describe("#app", () => {
                   "votes",
                   "comment_count",
                 ]);
-                expect(resp.body.article.comment_count).to.equal('0');
+                expect(resp.body.article.comment_count).to.equal(0);
               });
           });
 

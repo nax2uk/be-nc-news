@@ -37,7 +37,6 @@ const fetchArticles = ({ sort_by = 'created_at', order = 'desc', author, topic, 
         if (result.length == 0) {
           return Promise.reject({ status: 404, msg: 'Resource not found: cannot display results for query' })
         }
-        console.log(result);
         return {
           articles: result, articles_count: parseInt(total.count)
         }
@@ -56,7 +55,7 @@ const fetchArticleById = (articleID) => {
     .then(result => {
       if (result.length === 0)
         return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exists.' })
-      return result[0];
+      return { ...result[0], comment_count: parseInt(result[0].comment_count) };
     })
 }
 
