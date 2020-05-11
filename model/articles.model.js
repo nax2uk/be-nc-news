@@ -55,7 +55,7 @@ const fetchArticleById = (articleID) => {
     .then(result => {
       if (result.length === 0)
         return Promise.reject({ status: 404, msg: 'Resource Not Found: article_id does not exists.' })
-      return { ...result[0], comment_count: parseInt(result[0].comment_count) };
+      return result[0];
     })
 }
 

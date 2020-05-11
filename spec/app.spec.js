@@ -392,7 +392,7 @@ describe("#app", () => {
                   "votes",
                   "comment_count",
                 ]);
-                expect(resp.body.article.comment_count).to.equal(0);
+                expect(resp.body.article.comment_count).to.equal('0');
               });
           });
 
