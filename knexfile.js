@@ -16,15 +16,15 @@ const customConfig = {
   development: {
     connection: {
       database: "nc_news",
-      user: "nax2uk",
-      password: "password",
+      user: "postgres",
+      password: "postgres",
     },
   },
   test: {
     connection: {
       database: "nc_news_test",
-      user: "nax2uk",
-      password: "password",
+      user: "postgres",
+      password: "postgres",
     },
   },
   production: {
