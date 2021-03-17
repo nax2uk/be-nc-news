@@ -32,7 +32,7 @@ npm start
 
 ## Endpoints
 
-You can find the API [here](https://nc--news-server.herokuapp.com/api)
+You can find the API [here](https://be-northcoder-news.herokuapp.com/api)
 
 The endpoints serve up the following:
 
