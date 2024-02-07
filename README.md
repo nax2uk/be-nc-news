@@ -32,8 +32,6 @@ npm start
 
 ## Endpoints
 
-You can find the API [here](https://be-northcoder-news.herokuapp.com/api)
-
 The endpoints serve up the following:
 
 ### **GET** `/api
